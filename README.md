@@ -36,19 +36,35 @@ That's it. Now type `/taskflow:` and your commands will appear in the list.
 
 ## Try it
 
-Building a feature is **two steps** — first scaffold the task pack, then start the build:
+Building a feature is **two steps** — first scaffold the task pack, then start the build.
+
+> **Note:** `Payroll` below is just an **example module name** — replace it with your own
+> (e.g. `Invoices`, `Login`, `Reports`). Whatever name you use, autocode creates a
+> matching `<name>-tasks/` folder, so `Invoices` → `invoices-tasks/`.
+
+**Generic form** (what to type for any module — replace `<Module>`):
 
 ```text
 # Once per project — sets up the workflow (and optional email notifications)
 /taskflow:init
 
 # Step 1 — scaffold the task pack (creates a <module>-tasks/ folder)
-/taskflow:autocode Payroll
+/taskflow:autocode <Module>
 
 # Step 2 — when you're ready, start building from that pack
-/taskflow:epct Build the complete Payroll module from payroll-tasks/README.md — one task at a time.
+/taskflow:epct Build the complete <Module> module from <module>-tasks/README.md — one task at a time.
 #   (use /taskflow:epct-dotnet instead for a .NET backend module)
 ```
+
+**Filled-in example** (using the module name `Payroll`):
+
+```text
+/taskflow:autocode Payroll
+/taskflow:epct Build the complete Payroll module from payroll-tasks/README.md — one task at a time.
+```
+
+You don't have to memorize the Step 2 text — after Step 1, autocode **prints the exact
+build command with your module name already filled in**, so you just copy-paste it.
 
 **Step 1** (`autocode`) asks you a few questions (module name, your PRD, a Figma
 link for React Native, or an API doc for .NET), then generates the task-pack
