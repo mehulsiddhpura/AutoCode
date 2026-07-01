@@ -1,96 +1,93 @@
-# taskflow — a shareable Claude Code workflow plugin
+# taskflow — Claude Code plugin
 
-Turn a **PRD + Figma file** into an accurate, screen-by-screen **task pack** and build it **task-by-task** with approval/QA gates and email notifications — the same flow used to ship the Payroll module, packaged so your whole team can adopt it with two commands.
+taskflow adds a set of `/taskflow:*` slash commands to Claude Code that help you
+plan and build software feature-by-feature — with built-in review, QA, and
+approval gates. It works for both **React Native** (mobile) and **.NET** (backend)
+projects.
 
-This repo is **both a Claude Code marketplace and the plugin** it serves.
+You don't need to understand how it's built to use it. Just add it, then type
+`/taskflow:` in Claude Code and pick a command.
 
-## What you get (`/taskflow:<skill>`)
+---
 
-| Command | What it does |
-|---|---|
-| `/taskflow:autocode <Module>` | **Headliner.** Interviews you, reads the PRD + Figma (+ optional API doc), generates a `<module>-tasks/` pack (README + per-screen specs + QA scenarios + CSV), then auto-starts the gated build. |
-| `/taskflow:init` | One-time per-project setup: writes `scripts/notify-email.ps1`, gitignores the secret, and adds the notification gate table to `CLAUDE.md`. |
-| `/taskflow:epct <task>` | 6-phase Explore → Plan → Code → Review → QA → Commit for React Native, with **APPROVED** and **QA PASSED** gates. |
-| `/taskflow:epct-dotnet <task>` | The EPCT flow for .NET / backend work. |
-| `/taskflow:rnreviewer` | Senior React Native + TypeScript reviewer (10 dimensions). |
-| `/taskflow:pr-reviewer` | Production PR reviewer for .NET / React / RN / Kotlin. |
-| `/taskflow:gitworkflow` | Sync main → feature branch → staged-files table → structured commit → push. |
-| `/taskflow:qa-module <Module>` | Automated QA pipeline (discover, tests, device verify, report). |
-| `/taskflow:platformfix <symptom>` | iOS/Android platform-fix reference handbook. |
+## Requirements
 
-### Two tracks — React Native or .NET
+- **Claude Code** installed and working (the `/plugin` command is available inside it).
+- A **git repository** for your project (most commands assume you're in one).
 
-`/taskflow:autocode` asks which stack you're on and drives the matching flow end-to-end:
+---
 
-| Track | Pack it generates | Auto-chains into | Reviewers used |
-|---|---|---|---|
-| **React Native** | screen-by-screen (Figma-driven UI) | `/taskflow:epct` | `/taskflow:rnreviewer` · `/taskflow:platformfix` · `/taskflow:qa-module` |
-| **.NET** | endpoint/feature (API-driven, Controller→Service→Repository) | `/taskflow:epct-dotnet` | `/taskflow:pr-reviewer` |
+## Install (3 steps)
 
-`/taskflow:gitworkflow` and `/taskflow:init` are shared by both tracks. You can also run any EPCT directly: `/taskflow:epct <task>` for RN, `/taskflow:epct-dotnet <task>` for .NET.
-
-## Install (each teammate — two commands)
+Run these **inside Claude Code** (type them at the prompt, one at a time):
 
 ```text
-# 1. Add this repo as a marketplace
-#    GitHub:               /plugin marketplace add <owner>/taskflow
-#    Bitbucket/self-hosted: /plugin marketplace add https://bitbucket.org/<workspace>/taskflow.git
-
-# 2. Install the plugin, then reload
-/plugin install taskflow@taskflow
-/reload-plugins
+1.  /plugin marketplace add mehulsiddhpura/AutoCode
+2.  /plugin install taskflow@taskflow
+3.  /reload-plugins
 ```
 
-Then type `/taskflow:` and your commands appear.
+That's it. Now type `/taskflow:` and your commands will appear in the list.
 
-## Zero-touch per project (optional)
+> **Tip:** If step 1 asks about trusting the source, confirm to continue.
 
-Commit this to a project's `.claude/settings.json` so teammates who trust the project get the plugin auto-enabled:
+---
 
-```json
-{
-  "extraKnownMarketplaces": {
-    "taskflow": {
-      "source": { "source": "git", "url": "https://bitbucket.org/<workspace>/taskflow.git" }
-    }
-  },
-  "enabledPlugins": {
-    "taskflow@taskflow": true
-  }
-}
-```
-(For GitHub use `"source": { "source": "github", "repo": "<owner>/taskflow" }`.)
-
-## Use it
+## Try it
 
 ```text
-# once per project — sets up the email gates
+# Once per project — sets up the workflow (and optional email notifications)
 /taskflow:init
 
-# per module — scaffold the task pack and build it
+# Then scaffold and build a feature
 /taskflow:autocode Payroll
 ```
 
-`autocode` asks for the module name, PRD, Figma URL, and (optionally) an API-contract doc, then generates the pack and hands off to `/taskflow:epct`, which stops for your **APPROVED** at each task's plan and **QA PASSED** after QA.
+`autocode` will ask you a few questions (module name, your PRD, a Figma link for
+React Native, or an API doc for .NET), generate a task pack, and then build it
+task-by-task — pausing for your approval and after QA.
 
-## Email notifications
+---
 
-The gates email the task owner (start / blocker / plan-ready / QA / done) via `scripts/notify-email.ps1` (Brevo SMTP). The key is **never committed** — each dev copies `scripts/notify-email.local.ps1.example` → `scripts/notify-email.local.ps1` (gitignored) and fills in their Brevo key + recipient, or sets the `BREVO_SMTP_KEY` / `NOTIFY_EMAIL_*` env vars. A cross-platform `notify-email.sh` (curl) is included for macOS/Linux.
+## The commands
 
-## Repo layout
+| Command | What it does |
+|---|---|
+| `/taskflow:autocode <Module>` | **Start here.** Turns a PRD (+ Figma or API doc) into a task pack and builds it with gates. |
+| `/taskflow:init` | One-time project setup (run once per project). |
+| `/taskflow:epct <task>` | Guided build for **React Native**: Explore → Plan → Code → Review → QA → Commit. |
+| `/taskflow:epct-dotnet <task>` | The same guided build for **.NET / backend**. |
+| `/taskflow:rnreviewer` | Reviews React Native + TypeScript code. |
+| `/taskflow:pr-reviewer` | Reviews a PR (.NET / React / React Native / Kotlin). |
+| `/taskflow:qa-module <Module>` | Runs an automated QA pass on a module. |
+| `/taskflow:gitworkflow` | Branch, commit, and push with a clean, structured flow. |
+| `/taskflow:platformfix <symptom>` | iOS/Android fix reference for common platform issues. |
 
+You can always run a command on its own — e.g. `/taskflow:epct Add login screen`.
+
+---
+
+## Updating to the latest version
+
+When a new version is published, run this inside Claude Code:
+
+```text
+/plugin marketplace update taskflow
+/reload-plugins
 ```
-taskflow/
-├── .claude-plugin/marketplace.json     # the marketplace
-└── plugins/taskflow/
-    ├── .claude-plugin/plugin.json      # the plugin manifest
-    ├── skills/<name>/SKILL.md          # autocode, init, epct, epct-dotnet, rnreviewer,
-    │                                   # pr-reviewer, gitworkflow, qa-module, platformfix
-    └── scripts/                        # notify-email.ps1 / .sh / .local.ps1.example
-```
 
-## Maintaining
+---
 
-Edit a skill under `plugins/taskflow/skills/<name>/SKILL.md`, bump `version` in `plugin.json`, commit & push. Teammates run `/plugin marketplace update taskflow` then `/reload-plugins`.
+## Troubleshooting
 
-> Before publishing: set your team name in `marketplace.json` + `plugin.json` (`owner`/`author`), and the recipient/sender in `scripts/notify-email.local.ps1` (local only).
+- **Commands don't show up?** Run `/reload-plugins`, then type `/taskflow:` again.
+- **Install failed at step 1?** Make sure you typed the repo exactly: `mehulsiddhpura/AutoCode`.
+- **Email notifications?** They're optional — set them up during `/taskflow:init`. See
+  [MAINTAINING.md](MAINTAINING.md) for details.
+
+---
+
+## For maintainers / contributors
+
+The technical details — repo layout, how to edit skills, how to publish updates,
+and the email-notification setup — live in **[MAINTAINING.md](MAINTAINING.md)**.
