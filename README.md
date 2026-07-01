@@ -78,6 +78,26 @@ When a new version is published, run this inside Claude Code:
 
 ---
 
+## Uninstall
+
+To remove the plugin, run this inside Claude Code:
+
+```text
+/plugin uninstall taskflow@taskflow
+/reload-plugins
+```
+
+Optionally, remove the marketplace source too (so it no longer appears as available):
+
+```text
+/plugin marketplace remove taskflow
+```
+
+> Prefer to keep it but turn it off temporarily? Run `/plugin` to open the plugin
+> manager and toggle taskflow off — no uninstall needed.
+
+---
+
 ## Troubleshooting
 
 - **Commands don't show up?** Run `/reload-plugins`, then type `/taskflow:` again.
