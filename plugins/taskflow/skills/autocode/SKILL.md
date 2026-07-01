@@ -1,6 +1,6 @@
 ---
 name: autocode
-description: Turn a PRD (+ Figma for React Native, or an API/contract for .NET) into an EPCT-ready task pack and auto-start the gated build. Works for BOTH stacks — React Native (mobile UI) and .NET (backend API). Use when the user wants to scaffold a new module/feature and build it task-by-task.
+description: Turn a PRD (+ Figma for React Native, or an API/contract for .NET) into an EPCT-ready task pack and auto-start the autonomous build (email notifications, no approval gates). Works for BOTH stacks — React Native (mobile UI) and .NET (backend API). Use when the user wants to scaffold a new module/feature and build it task-by-task.
 ---
 
 # autocode — PRD → task pack → auto-build (React Native OR .NET)
@@ -96,8 +96,8 @@ Create a new **`{{lowercamel}}`** module mirroring the app's existing feature mo
 ## Testing scenarios
 Maintain one combined [{{Pascal}}_scenarios.md]({{Pascal}}_scenarios.md); append each screen's scenarios during its EPCT QA phase. Cover happy path, switching/filters, empty/no-data, null-fields, downloads, Android + iOS.
 
-## Notifications (email gates)
-Drives `/taskflow:epct`, which emails the owner at each gate via `scripts/notify-email.ps1`. Run `/taskflow:init` once first.
+## Notifications (email)
+Drives `/taskflow:epct`, which runs autonomously and emails the owner at task-start, plan-done, task-done, all-done, and on any blocker via `scripts/notify-email.ps1`. Run `/taskflow:init` once first.
 
 ## Status legend
 ✅ API done · 🔲 app-side only · ⬜ pending
@@ -148,8 +148,8 @@ Add the **`{{Pascal}}`** feature mirroring the solution's existing layering — 
 ## Testing scenarios
 Maintain one combined [{{Pascal}}_scenarios.md]({{Pascal}}_scenarios.md); append each endpoint's API scenarios during its EPCT QA phase. Cover happy path, validation failures, auth/forbidden, not-found, conflict/concurrency, and pagination edges.
 
-## Notifications (email gates)
-Drives `/taskflow:epct-dotnet`, which emails the owner at each gate via `scripts/notify-email.ps1`. Run `/taskflow:init` once first.
+## Notifications (email)
+Drives `/taskflow:epct-dotnet`, which runs autonomously and emails the owner at task-start, plan-done, task-done, all-done, and on any blocker via `scripts/notify-email.ps1`. Run `/taskflow:init` once first.
 
 ## Status legend
 ✅ implemented · 🔲 stub/contract-only · ⬜ pending
@@ -201,10 +201,10 @@ If the project has no `scripts/notify-email.ps1`, run **`/taskflow:init`** first
 
 ## Phase 5 — Auto-chain into the right EPCT
 Print a short summary (folder path + task count + track), then immediately invoke:
-- **RN:** `/taskflow:epct` → *"Build the complete {{Module}} module from `<kebab-name>-tasks/README.md` — one task at a time (Task 1 → N), following the README + each `screens/*.md` spec and the notification gates."*
-- **.NET:** `/taskflow:epct-dotnet` → *"Build the complete {{Module}} API from `<kebab-name>-tasks/README.md` — one task at a time (Task 1 → N), following the README + each `endpoints/*.md` spec and the notification gates."*
+- **RN:** `/taskflow:epct` → *"Build the complete {{Module}} module from `<kebab-name>-tasks/README.md` — one task at a time (Task 1 → N), following the README + each `screens/*.md` spec and the email notifications."*
+- **.NET:** `/taskflow:epct-dotnet` → *"Build the complete {{Module}} API from `<kebab-name>-tasks/README.md` — one task at a time (Task 1 → N), following the README + each `endpoints/*.md` spec and the email notifications."*
 
-The chosen EPCT runs its normal gated flow (STOP for **APPROVED** after each task's plan, **QA PASSED** after QA), and uses its track's reviewers (RN: `/taskflow:rnreviewer` + `/taskflow:platformfix`; .NET: `/taskflow:pr-reviewer`). So the user still reviews each task before code is written.
+The chosen EPCT runs its **autonomous flow** — it works tasks one at a time and **emails the owner at task-start, plan-done, task-done, and all-done** (no approval gates at plan or QA), only STOPPING for a genuine blocker / needed intervention (with a summary email). It uses its track's reviewers (RN: `/taskflow:rnreviewer` + `/taskflow:platformfix`; .NET: `/taskflow:pr-reviewer`).
 
 ---
 

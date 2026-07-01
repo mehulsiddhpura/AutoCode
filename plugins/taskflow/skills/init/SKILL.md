@@ -1,11 +1,11 @@
 ---
 name: init
-description: One-time project setup for the taskflow email-notification gates. Writes scripts/notify-email.ps1, gitignores the secret, and appends the Development Notifications gate table to CLAUDE.md. Run once per project before using /taskflow:autocode or /taskflow:epct.
+description: One-time project setup for the taskflow email notifications. Writes scripts/notify-email.ps1, gitignores the secret, and appends the Development Notifications table to CLAUDE.md. Run once per project before using /taskflow:autocode or /taskflow:epct.
 ---
 
-# init — wire up the taskflow notification gates in this project
+# init — wire up the taskflow email notifications in this project
 
-Set up the email-gate plumbing in the CURRENT project. Be **idempotent**: if a piece already exists, leave it and report "already present". Never commit secrets.
+Set up the email-notification plumbing in the CURRENT project. Be **idempotent**: if a piece already exists, leave it and report "already present". Never commit secrets.
 
 ## Steps
 
@@ -15,7 +15,7 @@ Set up the email-gate plumbing in the CURRENT project. Be **idempotent**: if a p
 <#
 .SYNOPSIS  Sends a notification email via the Brevo SMTP relay.
 .DESCRIPTION
-  Used by the taskflow EPCT gates. The SMTP key + recipient come from env vars, or from
+  Used by the taskflow EPCT notifications. The SMTP key + recipient come from env vars, or from
   scripts\notify-email.local.ps1 (gitignored). A missing key prints an error and exits
   non-zero WITHOUT throwing, so it never aborts the surrounding workflow.
 .EXAMPLE  powershell -File scripts/notify-email.ps1 -Subject "[TASK-1] Done" -Body "Shipped"
@@ -74,31 +74,30 @@ $env:NOTIFY_EMAIL_FROM = "you@your-verified-domain.com"   # MUST be a Brevo-veri
 
 3. **Gitignore the secret:** ensure `.gitignore` contains a line `scripts/notify-email.local.ps1` (append it if missing; create `.gitignore` if absent). This MUST be in place before you write the local file in Step 5.
 
-4. **Append the gate table to `CLAUDE.md`** (create the file if it doesn't exist). Add this section verbatim unless it's already present:
+4. **Append the notifications table to `CLAUDE.md`** (create the file if it doesn't exist). Add this section verbatim unless it's already present:
 
 ```markdown
 ## MANDATORY: Development Notifications (email)
 
-When running a multi-task pack with `/taskflow:epct`, work the tasks one at a time and **email the task owner at the gates below**. This is a stop-and-summon system. Send with:
+When running a multi-task pack with `/taskflow:epct` or `/taskflow:epct-dotnet`, work the tasks one at a time and **run autonomously — do NOT stop for approval at plan or QA.** Just **email the task owner at the points below** to keep them informed. Send with:
 `powershell -File scripts/notify-email.ps1 -Subject "<subject>" -Body "<body>"`
-Email failures are non-fatal (log and continue), but a blocker still STOPS the task.
+Email failures are non-fatal (log and continue). The ONLY time you STOP is a genuine blocker / needed intervention (row B).
 
-| # | When | Subject | Body |
-|---|------|---------|------|
-| 0 | About to start a task — **STOP**, wait for go-ahead | `[<TASK>] Starting — OK to proceed?` | task name + what it covers; paused awaiting confirmation |
-| 1 | **Blocker / needs intervention** (any phase) — **STOP** | `[<TASK>] NEEDS YOUR INTERVENTION` | what stopped it, why, exactly what input is needed |
-| 2 | Plan ready (awaiting `APPROVED`) — **STOP** | `[<TASK>] Plan ready — needs APPROVED` | summary + acceptance criteria + risks |
-| 3 | QA done (awaiting `QA PASSED`) — **STOP** | `[<TASK>] QA <PASS/FAIL> — needs QA PASSED` | QA verdict + any failures |
-| 4 | Task completed | `[<TASK>] Done` | what shipped + branch/commit |
-| 5 | All work completed (whole module) | `[<MODULE>] All tasks complete` | per-task summary + outstanding risks |
+| # | When | Stop? | Subject | Body |
+|---|------|-------|---------|------|
+| 1 | Task is starting | no — proceed | `[<TASK>] Started` | task name + what it covers |
+| 2 | Plan is done | no — continue to Code | `[<TASK>] Plan done` | plan summary + acceptance criteria + risks |
+| 3 | Task completed (QA finished) | no — next task | `[<TASK>] Done` | what shipped + QA verdict + any deferred items |
+| 4 | All tasks completed (whole module) | done | `[<MODULE>] All tasks complete` | per-task summary + outstanding risks |
+| B | **Blocker / intervention needed** (any phase) | **YES — STOP** | `[<TASK>] NEEDS YOUR INTERVENTION` | proper summary: what stopped it, why, and exactly what input is needed |
 ```
 
 5. **Offer to configure email now — but make it OPTIONAL.** Ask the user first: *"Configure email notifications now, or skip for later?"* (use AskUserQuestion with options like "Configure now" / "Skip for now").
 
    **If the user says NO / skip:**
-   - Do NOT block. Email is a convenience layer, not a hard dependency — the EPCT/autocode gates still STOP and wait for the user in-chat; they just won't also send an email.
-   - Leave the `.example` in place so the user can set it up later, and tell them: *"Email gates are skipped. The workflow stop-points still pause for your approval in chat. To enable email later, copy `scripts/notify-email.local.ps1.example` to `scripts/notify-email.local.ps1`, fill in your Brevo creds, and run the test — or just re-run `/taskflow:init`."*
-   - Then finish init normally (the `.ps1`, `.example`, `.gitignore`, and CLAUDE.md gate table from Steps 1–4 are already done).
+   - Do NOT block. Email is a convenience layer, not a hard dependency — the EPCT/autocode flow still runs autonomously and still STOPS for genuine blockers in-chat; it just won't also send an email.
+   - Leave the `.example` in place so the user can set it up later, and tell them: *"Email notifications are skipped. The workflow still runs and still pauses in chat if it hits a blocker. To enable email later, copy `scripts/notify-email.local.ps1.example` to `scripts/notify-email.local.ps1`, fill in your Brevo creds, and run the test — or just re-run `/taskflow:init`."*
+   - Then finish init normally (the `.ps1`, `.example`, `.gitignore`, and CLAUDE.md notifications table from Steps 1–4 are already done).
 
    **If the user says YES, collect the credentials and write the real local file yourself** — do NOT just point them at the `.example` (that is the #1 cause of setup failure: users edit `.example`, which the script never reads).
    - First confirm `.gitignore` contains `scripts/notify-email.local.ps1` (from Step 3). If it does not, STOP and fix that first — never write secrets to an un-ignored path.

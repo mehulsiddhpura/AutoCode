@@ -1,13 +1,20 @@
 ---
 name: epct
-description: Structured 6-phase Explore-Plan-Code-Review-QA-Commit workflow for React Native features and non-trivial bug fixes, with approval and QA gates.
+description: Structured 5-phase Explore-Plan-Code-Review-QA workflow for React Native features and non-trivial bug fixes. Runs autonomously and emails the task owner at start, plan-done, task-done, all-done, and on blockers — no approval gates.
 ---
 
 # EPCT – React Native
 
-**Alignment Gates**
-- **Gate 1 – APPROVED**: Stop after Phase 1 (Explore) and Phase 2 (Plan). Start Phase 3 (Code) only when the task owner replies **APPROVED**.
-- **Gate 2 – QA PASSED**: Stop after Phase 5 (QA) and present the QA Report. Start Phase 6 (Commit) only when the task owner replies **QA PASSED**.
+**Autonomous flow — notify, don't gate.** Work tasks one at a time (Task 1 → N) and run each task's phases straight through **without stopping for approval**. Email the task owner at the notification points below. The only time you STOP is a genuine **blocker** or a decision that truly requires human intervention.
+
+**Notifications (email the task owner via `scripts/notify-email.ps1`)**
+- **Task start** — when you begin a task. Then proceed.
+- **Plan done** — when Phase 2 (Plan) is complete. **Informational only — do NOT wait for approval; continue straight to Phase 3.**
+- **Task done** — when the task's QA (Phase 5) is complete.
+- **All tasks done** — when the whole module/pack is finished.
+- **Blocker / intervention needed** — any phase, when progress is blocked or a decision only the owner can make is required. **STOP and email a proper summary:** what stopped it, why, and exactly what input is needed.
+
+Email failures are non-fatal (log and continue). A real blocker still STOPS the task until the owner responds.
 
 **Task Inputs must include**
 - Task ID, Outcome, Scope IN/OUT, Constraints, Definition of Done, Risks.
@@ -16,7 +23,7 @@ description: Structured 6-phase Explore-Plan-Code-Review-QA-Commit workflow for 
 - Phase 1 (Explore): files/paths read + why; findings; unknowns & risks.
 - Phase 2 (Plan): numbered WBS + acceptance criteria; exact test commands; impact list.
 - Phase 3 (Code): diffs + build/test outputs + principles compliance checklist.
-- Phase 4 (Test): results & evidence; DoD check.
+- Phase 4 (Review): reviewer verdict + fixes applied.
 - Phase 5 (QA): QA Report table (PASS/FAIL per category); platform test matrix; principles re-check.
 
 **Artifacts**
@@ -73,6 +80,7 @@ description: Structured 6-phase Explore-Plan-Code-Review-QA-Commit workflow for 
 ---
 
 ## Phase 1: Explore
+- **Email "Task start"** — notify the owner the task is beginning (task name + what it covers), then proceed without waiting.
 - Read the relevant AI context doc in `_ai_context/modules/` if one exists for the affected module
 - **Review design patterns and common components in the existing feature modules in this app:**
   - Study how each module structures its screens, tabs, and module-specific components under `app/screens/<Module>/`
@@ -88,7 +96,7 @@ description: Structured 6-phase Explore-Plan-Code-Review-QA-Commit workflow for 
 - List exact test commands
 - List all files that will be modified (impact list)
 - Review Development Principles above and note which apply to this task
-- **STOP — wait for APPROVED before proceeding to Phase 3**
+- **Email "Plan done"** — send the plan summary + acceptance criteria + risks to the owner. This is informational; **do NOT wait for approval — continue straight to Phase 3.**
 
 ## Phase 3: Code
 
@@ -192,28 +200,16 @@ If Phase 4 review was done by the same agent that wrote the code, invoke `/taskf
 | Regression check | PASS/FAIL | All existing tests pass, no breakage |
 | PR review (fresh eyes) | PASS/FAIL | No MUST FIX issues remaining |
 
-**All 12 categories must show PASS to proceed.**
+**All 12 categories must show PASS before the task is considered done.**
 
-### Gate: **QA PASSED**
-Stop and present the QA Report to the task owner. Only proceed to Phase 6 (Commit) when the task owner replies **QA PASSED**.
+### Task done
+Present the QA Report, then **email "Task done"** to the owner (what shipped in this task + QA verdict + any deferred SHOULD FIX items). No approval gate — move on to the next task.
+
+If a QA category is **FAIL** and you cannot resolve it yourself, treat it as a **blocker**: STOP and email a summary of what failed and what input is needed (see the Notifications section at the top).
 
 ---
 
-## Phase 6: Commit
+## After the last task: All tasks done
+When every task in the pack is complete, **email "All tasks done"** with a per-task summary and any outstanding risks.
 
-### ⛔ Gate: COMMIT APPROVED
-**STOP. Do NOT run any git command until the user explicitly approves.**
-Show a summary of all files changed during this task and wait.
-Only proceed when the user replies **COMMIT**, **YES**, or **APPROVED**.
-
-Invoke `/taskflow:gitworkflow` to execute the full git commit process.
-
-The workflow will:
-1. Sync with `main` branch
-2. Create a `feature/<task-name>` branch
-3. Stage only `app/` source files (and any intentionally changed native files)
-4. Display a staged files table — **wait for user confirmation before committing**
-5. Commit with a structured message including Co-Authored-By
-6. Push to origin
-
-**NEVER stage:** `node_modules/`, `android/build/`, `ios/build/`, `ios/Pods/`, `.claude/`, `CLAUDE.md`, `_ai_context/epct/`, `tmpclaude-*`
+> **Committing is not part of this flow.** This EPCT ends at the QA Report + "Task done" email. If you want to commit/push the work, run `/taskflow:gitworkflow` separately.

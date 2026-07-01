@@ -1,9 +1,10 @@
 # taskflow — Claude Code plugin
 
 taskflow adds a set of `/taskflow:*` slash commands to Claude Code that help you
-plan and build software feature-by-feature — with built-in review, QA, and
-approval gates. It works for both **React Native** (mobile) and **.NET** (backend)
-projects.
+plan and build software feature-by-feature — with built-in review and QA. It runs
+autonomously and emails you at each milestone (task start, plan done, task done,
+all done) and whenever it hits a blocker. It works for both **React Native**
+(mobile) and **.NET** (backend) projects.
 
 You don't need to understand how it's built to use it. Just add it, then type
 `/taskflow:` in Claude Code and pick a command.
@@ -45,7 +46,9 @@ That's it. Now type `/taskflow:` and your commands will appear in the list.
 
 `autocode` will ask you a few questions (module name, your PRD, a Figma link for
 React Native, or an API doc for .NET), generate a task pack, and then build it
-task-by-task — pausing for your approval and after QA.
+task-by-task on its own — emailing you when each task starts, when its plan is
+ready, when it's done, and when the whole module is finished. It only stops to ask
+you if it hits a blocker.
 
 ---
 
@@ -53,10 +56,10 @@ task-by-task — pausing for your approval and after QA.
 
 | Command | What it does |
 |---|---|
-| `/taskflow:autocode <Module>` | **Start here.** Turns a PRD (+ Figma or API doc) into a task pack and builds it with gates. |
+| `/taskflow:autocode <Module>` | **Start here.** Turns a PRD (+ Figma or API doc) into a task pack and builds it autonomously with email updates. |
 | `/taskflow:init` | One-time project setup (run once per project). |
-| `/taskflow:epct <task>` | Guided build for **React Native**: Explore → Plan → Code → Review → QA → Commit. |
-| `/taskflow:epct-dotnet <task>` | The same guided build for **.NET / backend**. |
+| `/taskflow:epct <task>` | Autonomous build for **React Native**: Explore → Plan → Code → Review → QA (emails you at each milestone). |
+| `/taskflow:epct-dotnet <task>` | The same autonomous build for **.NET / backend**: Explore → Plan → Code → Test → QA. |
 | `/taskflow:rnreviewer` | Reviews React Native + TypeScript code. |
 | `/taskflow:pr-reviewer` | Reviews a PR (.NET / React / React Native / Kotlin). |
 | `/taskflow:qa-module <Module>` | Runs an automated QA pass on a module. |

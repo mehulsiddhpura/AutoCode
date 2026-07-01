@@ -1,13 +1,20 @@
 ---
 name: epct-dotnet
-description: Structured 5-phase Explore-Plan-Code-Test-QA workflow for .NET / backend features and non-trivial bug fixes, with approval and QA gates plus security, authorization, and database principles.
+description: Structured 5-phase Explore-Plan-Code-Test-QA workflow for .NET / backend features and non-trivial bug fixes. Runs autonomously and emails the task owner at start, plan-done, task-done, all-done, and on blockers — no approval gates. Includes security, authorization, and database principles.
 ---
 
-# EPCT — Standard
+# EPCT — Standard (.NET)
 
-**Alignment Gates**
-- **Gate 1 — APPROVED**: Stop after Phase 1 (Explore) and Phase 2 (Plan). Start Phase 3 (Code) only when the task owner replies **APPROVED**.
-- **Gate 2 — QA PASSED**: Stop after Phase 5 (QA) and present the QA Report as the final deliverable.
+**Autonomous flow — notify, don't gate.** Work tasks one at a time (Task 1 → N) and run each task's phases straight through **without stopping for approval**. Email the task owner at the notification points below. The only time you STOP is a genuine **blocker** or a decision that truly requires human intervention.
+
+**Notifications (email the task owner via `scripts/notify-email.ps1`)**
+- **Task start** — when you begin a task. Then proceed.
+- **Plan done** — when Phase 2 (Plan) is complete. **Informational only — do NOT wait for approval; continue straight to Phase 3.**
+- **Task done** — when the task's QA (Phase 5) is complete.
+- **All tasks done** — when the whole module/pack is finished.
+- **Blocker / intervention needed** — any phase, when progress is blocked or a decision only the owner can make is required. **STOP and email a proper summary:** what stopped it, why, and exactly what input is needed.
+
+Email failures are non-fatal (log and continue). A real blocker still STOPS the task until the owner responds.
 
 **Task Inputs (from Jira/prompt) must include**
 - Task ID, Outcome, Scope IN/OUT, Constraints, Definition of Done, Risks.
@@ -73,6 +80,7 @@ description: Structured 5-phase Explore-Plan-Code-Test-QA workflow for .NET / ba
 ---
 
 ## Phase 1: Explore
+- **Email "Task start"** — notify the owner the task is beginning (task name + what it covers), then proceed without waiting.
 - Research the current codebase and relevant patterns
 - Identify existing similar implementations
 - Understand dependencies and constraints
@@ -84,6 +92,7 @@ description: Structured 5-phase Explore-Plan-Code-Test-QA workflow for .NET / ba
 - Identify potential risks and mitigation strategies
 - **Review Development Principles above and note which apply to this task**
 - Create a detailed execution timeline
+- **Email "Plan done"** — send the plan summary + acceptance criteria + risks to the owner. This is informational; **do NOT wait for approval — continue straight to Phase 3.**
 
 ## Phase 3: Code
 
@@ -188,9 +197,14 @@ Present a table:
 | PR review (fresh eyes) | PASS/FAIL | No MUST FIX issues remaining |
 | DoD sign-off | PASS/FAIL | All Definition of Done criteria met |
 
-**All 12 categories must show PASS to proceed.**
+**All 12 categories must show PASS before the task is considered done.**
 
-### Gate: **QA PASSED**
-Stop and present the QA Report to the task owner as the final deliverable.
+### Task done
+Present the QA Report as the task deliverable, then **email "Task done"** to the owner (what shipped in this task + QA verdict + any deferred SHOULD FIX items). No approval gate — move on to the next task.
+
+If a QA category is **FAIL** and you cannot resolve it yourself, treat it as a **blocker**: STOP and email a summary of what failed and what input is needed (see the Notifications section at the top).
+
+### After the last task: All tasks done
+When every task in the pack is complete, **email "All tasks done"** with a per-task summary and any outstanding risks.
 
 Provide detailed output for each phase before proceeding to the next.

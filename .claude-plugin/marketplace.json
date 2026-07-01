@@ -3,7 +3,7 @@
   "owner": {
     "name": "MN001906"
   },
-  "description": "PRD + Figma -> EPCT task-pack generator and gated build workflow for mobile (React Native) and .NET teams.",
+  "description": "PRD + Figma -> EPCT task-pack generator and autonomous build workflow (email notifications) for mobile (React Native) and .NET teams.",
   "plugins": [
     {
       "name": "taskflow",

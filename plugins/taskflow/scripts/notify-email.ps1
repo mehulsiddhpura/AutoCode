@@ -4,8 +4,8 @@
 
 .DESCRIPTION
   Reusable across any module. Used by the taskflow EPCT "Development Notifications"
-  gates to email the task owner on start-of-task, blockers/intervention, plan/QA
-  gates, task-done, and all-work-done.
+  to email the task owner on task-start, plan-done, task-done, all-tasks-done, and
+  on any blocker / needed intervention.
 
   The SMTP key is read from the BREVO_SMTP_KEY environment variable. If that is not
   set, the script dot-sources scripts\notify-email.local.ps1 (gitignored) which is

@@ -9,10 +9,10 @@ This repo is **both a Claude Code marketplace and the plugin** it serves.
 
 | Command | What it does |
 |---|---|
-| `/taskflow:autocode <Module>` | **Headliner.** Interviews you, reads the PRD + Figma (+ optional API doc), generates a `<module>-tasks/` pack (README + per-screen specs + QA scenarios + CSV), then auto-starts the gated build. |
-| `/taskflow:init` | One-time per-project setup: writes `scripts/notify-email.ps1`, gitignores the secret, and adds the notification gate table to `CLAUDE.md`. |
-| `/taskflow:epct <task>` | 6-phase Explore → Plan → Code → Review → QA → Commit for React Native, with **APPROVED** and **QA PASSED** gates. |
-| `/taskflow:epct-dotnet <task>` | The EPCT flow for .NET / backend work. |
+| `/taskflow:autocode <Module>` | **Headliner.** Interviews you, reads the PRD + Figma (+ optional API doc), generates a `<module>-tasks/` pack (README + per-screen specs + QA scenarios + CSV), then auto-starts the autonomous build. |
+| `/taskflow:init` | One-time per-project setup: writes `scripts/notify-email.ps1`, gitignores the secret, and adds the Development Notifications table to `CLAUDE.md`. |
+| `/taskflow:epct <task>` | 5-phase Explore → Plan → Code → Review → QA for React Native. Runs autonomously with email notifications; no approval gates. Committing is not part of the flow — run `/taskflow:gitworkflow` separately. |
+| `/taskflow:epct-dotnet <task>` | The EPCT flow for .NET / backend work (Explore → Plan → Code → Test → QA), also autonomous. |
 | `/taskflow:rnreviewer` | Senior React Native + TypeScript reviewer (10 dimensions). |
 | `/taskflow:pr-reviewer` | Production PR reviewer for .NET / React / RN / Kotlin. |
 | `/taskflow:gitworkflow` | Sync main → feature branch → staged-files table → structured commit → push. |
@@ -51,7 +51,7 @@ Commit this to a project's `.claude/settings.json` so teammates who trust the pr
 
 ## Email notifications
 
-The gates email the task owner (start / blocker / plan-ready / QA / done) via `scripts/notify-email.ps1` (Brevo SMTP). The key is **never committed** — each dev copies `scripts/notify-email.local.ps1.example` → `scripts/notify-email.local.ps1` (gitignored) and fills in their Brevo key + recipient, or sets the `BREVO_SMTP_KEY` / `NOTIFY_EMAIL_*` env vars. A cross-platform `notify-email.sh` (curl) is included for macOS/Linux.
+The flow emails the task owner at task-start, plan-done, task-done, all-tasks-done, and on any blocker / needed intervention (with a summary), via `scripts/notify-email.ps1` (Brevo SMTP). The key is **never committed** — each dev copies `scripts/notify-email.local.ps1.example` → `scripts/notify-email.local.ps1` (gitignored) and fills in their Brevo key + recipient, or sets the `BREVO_SMTP_KEY` / `NOTIFY_EMAIL_*` env vars. A cross-platform `notify-email.sh` (curl) is included for macOS/Linux.
 
 ## Repo layout
 
