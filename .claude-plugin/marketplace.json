@@ -1,0 +1,14 @@
+{
+  "name": "taskflow",
+  "owner": {
+    "name": "MN001906"
+  },
+  "description": "PRD + Figma -> EPCT task-pack generator and gated build workflow for mobile (React Native) and .NET teams.",
+  "plugins": [
+    {
+      "name": "taskflow",
+      "source": "./plugins/taskflow",
+      "description": "Slash commands: /taskflow:autocode, /taskflow:init, /taskflow:epct, /taskflow:epct-dotnet, /taskflow:rnreviewer, /taskflow:pr-reviewer, /taskflow:gitworkflow, /taskflow:qa-module, /taskflow:platformfix"
+    }
+  ]
+}

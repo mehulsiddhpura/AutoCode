@@ -1,0 +1,8 @@
+# Secrets — never commit. Each developer creates their own local key file.
+**/notify-email.local.ps1
+notify-email.local.ps1
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.log

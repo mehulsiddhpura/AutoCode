@@ -1,0 +1,17 @@
+{
+  "name": "taskflow",
+  "version": "1.0.0",
+  "description": "Turn a PRD + Figma file into an EPCT task pack and build it task-by-task with approval/QA gates and email notifications.",
+  "author": {
+    "name": "MN001906"
+  },
+  "keywords": [
+    "epct",
+    "taskpack",
+    "react-native",
+    "dotnet",
+    "workflow",
+    "figma",
+    "scaffolding"
+  ]
+}
