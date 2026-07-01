@@ -1,13 +1,13 @@
 ---
 name: autocode
-description: Turn a PRD (+ Figma for React Native, or an API/contract for .NET) into an EPCT-ready task pack and auto-start the autonomous build (email notifications, no approval gates). Works for BOTH stacks — React Native (mobile UI) and .NET (backend API). Use when the user wants to scaffold a new module/feature and build it task-by-task.
+description: Turn a PRD (+ Figma for React Native, or an API/contract for .NET) into an EPCT-ready task pack (folder structure of per-task specs). Stops after generating the pack and tells the user the command to start the build — it does NOT auto-start building. Works for BOTH stacks — React Native (mobile UI) and .NET (backend API). Use when the user wants to scaffold a new module/feature.
 ---
 
-# autocode — PRD → task pack → auto-build (React Native OR .NET)
+# autocode — PRD → task pack (React Native OR .NET)
 
-You are scaffolding a complete, accurate task pack for a new module and then handing it to the right EPCT flow. `$ARGUMENTS` is the module display name (e.g. "Payroll"). This skill supports two **tracks** — pick the right one first, then everything downstream follows it:
+You are scaffolding a complete, accurate task pack for a new module. `$ARGUMENTS` is the module display name (e.g. "Payroll"). **Your job ends when the task-pack folder is generated** — you then tell the user which command starts the build. You do **not** start building automatically. This skill supports two **tracks** — pick the right one first, then everything downstream follows it:
 
-| Track | Generate | Auto-chain build | Reviewers used by that EPCT |
+| Track | Generate | Build command (user runs when ready) | Reviewers used by that EPCT |
 |---|---|---|---|
 | **React Native (RN)** | screen-by-screen pack (Figma-driven UI) | `/taskflow:epct` | `/taskflow:rnreviewer`, `/taskflow:platformfix`, `/taskflow:qa-module` |
 | **.NET** | endpoint/feature pack (API-driven) | `/taskflow:epct-dotnet` | `/taskflow:pr-reviewer` |
@@ -199,12 +199,19 @@ If the project has no `scripts/notify-email.ps1`, run **`/taskflow:init`** first
 
 ---
 
-## Phase 5 — Auto-chain into the right EPCT
-Print a short summary (folder path + task count + track), then immediately invoke:
-- **RN:** `/taskflow:epct` → *"Build the complete {{Module}} module from `<kebab-name>-tasks/README.md` — one task at a time (Task 1 → N), following the README + each `screens/*.md` spec and the email notifications."*
-- **.NET:** `/taskflow:epct-dotnet` → *"Build the complete {{Module}} API from `<kebab-name>-tasks/README.md` — one task at a time (Task 1 → N), following the README + each `endpoints/*.md` spec and the email notifications."*
+## Phase 5 — Finish and hand off (do NOT auto-start the build)
 
-The chosen EPCT runs its **autonomous flow** — it works tasks one at a time and **emails the owner at task-start, plan-done, task-done, and all-done** (no approval gates at plan or QA), only STOPPING for a genuine blocker / needed intervention (with a summary email). It uses its track's reviewers (RN: `/taskflow:rnreviewer` + `/taskflow:platformfix`; .NET: `/taskflow:pr-reviewer`).
+**Stop here. Generating the task pack and building it are two separate steps.** Do **not** invoke the EPCT automatically. Print a short summary and the exact command the user can run when they're ready:
+
+- Summary: folder path (`<kebab-name>-tasks/`), track (RN/.NET), and task count (Task 1 → N).
+- Then tell the user: *"The task pack is ready. When you want to start building, run one of the commands below — the build runs autonomously and emails you at task-start, plan-done, task-done, and all-done (stopping only for a blocker)."*
+
+**Copy-paste commands to give the user:**
+- **RN — whole module:** `/taskflow:epct Build the complete {{Module}} module from <kebab-name>-tasks/README.md — one task at a time (Task 1 → N), following the README + each screens/*.md spec and the email notifications.`
+- **.NET — whole module:** `/taskflow:epct-dotnet Build the complete {{Module}} API from <kebab-name>-tasks/README.md — one task at a time (Task 1 → N), following the README + each endpoints/*.md spec and the email notifications.`
+- **Single task (either track):** `/taskflow:epct <kebab-name>-tasks/screens/NN_<screen>.md` (RN) or `/taskflow:epct-dotnet <kebab-name>-tasks/endpoints/NN_<feature>.md` (.NET).
+
+Whichever EPCT the user then runs works tasks one at a time and **emails the owner at task-start, plan-done, task-done, and all-done** (no approval gates at plan or QA), only STOPPING for a genuine blocker / needed intervention (with a summary email). It uses its track's reviewers (RN: `/taskflow:rnreviewer` + `/taskflow:platformfix`; .NET: `/taskflow:pr-reviewer`).
 
 ---
 

@@ -36,19 +36,27 @@ That's it. Now type `/taskflow:` and your commands will appear in the list.
 
 ## Try it
 
+Building a feature is **two steps** — first scaffold the task pack, then start the build:
+
 ```text
 # Once per project — sets up the workflow (and optional email notifications)
 /taskflow:init
 
-# Then scaffold and build a feature
+# Step 1 — scaffold the task pack (creates a <module>-tasks/ folder)
 /taskflow:autocode Payroll
+
+# Step 2 — when you're ready, start building from that pack
+/taskflow:epct Build the complete Payroll module from payroll-tasks/README.md — one task at a time.
+#   (use /taskflow:epct-dotnet instead for a .NET backend module)
 ```
 
-`autocode` will ask you a few questions (module name, your PRD, a Figma link for
-React Native, or an API doc for .NET), generate a task pack, and then build it
-task-by-task on its own — emailing you when each task starts, when its plan is
-ready, when it's done, and when the whole module is finished. It only stops to ask
-you if it hits a blocker.
+**Step 1** (`autocode`) asks you a few questions (module name, your PRD, a Figma
+link for React Native, or an API doc for .NET), then generates the task-pack
+folder and **stops** — it does *not* start building on its own.
+
+**Step 2** (`epct` / `epct-dotnet`) is when the actual build runs — task-by-task on
+its own, emailing you when each task starts, when its plan is ready, when it's done,
+and when the whole module is finished. It only stops to ask you if it hits a blocker.
 
 ---
 
@@ -56,7 +64,7 @@ you if it hits a blocker.
 
 | Command | What it does |
 |---|---|
-| `/taskflow:autocode <Module>` | **Start here.** Turns a PRD (+ Figma or API doc) into a task pack and builds it autonomously with email updates. |
+| `/taskflow:autocode <Module>` | **Start here.** Turns a PRD (+ Figma or API doc) into a task-pack folder. Then run `epct`/`epct-dotnet` to build it. |
 | `/taskflow:init` | One-time project setup (run once per project). |
 | `/taskflow:epct <task>` | Autonomous build for **React Native**: Explore → Plan → Code → Review → QA (emails you at each milestone). |
 | `/taskflow:epct-dotnet <task>` | The same autonomous build for **.NET / backend**: Explore → Plan → Code → Test → QA. |

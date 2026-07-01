@@ -9,7 +9,7 @@ This repo is **both a Claude Code marketplace and the plugin** it serves.
 
 | Command | What it does |
 |---|---|
-| `/taskflow:autocode <Module>` | **Headliner.** Interviews you, reads the PRD + Figma (+ optional API doc), generates a `<module>-tasks/` pack (README + per-screen specs + QA scenarios + CSV), then auto-starts the autonomous build. |
+| `/taskflow:autocode <Module>` | **Headliner.** Interviews you, reads the PRD + Figma (+ optional API doc), generates a `<module>-tasks/` pack (README + per-screen specs + QA scenarios + CSV), then **stops and tells you the command to start the build** (it does not auto-start). |
 | `/taskflow:init` | One-time per-project setup: writes `scripts/notify-email.ps1`, gitignores the secret, and adds the Development Notifications table to `CLAUDE.md`. |
 | `/taskflow:epct <task>` | 5-phase Explore → Plan → Code → Review → QA for React Native. Runs autonomously with email notifications; no approval gates. Committing is not part of the flow — run `/taskflow:gitworkflow` separately. |
 | `/taskflow:epct-dotnet <task>` | The EPCT flow for .NET / backend work (Explore → Plan → Code → Test → QA), also autonomous. |
@@ -21,14 +21,14 @@ This repo is **both a Claude Code marketplace and the plugin** it serves.
 
 ### Two tracks — React Native or .NET
 
-`/taskflow:autocode` asks which stack you're on and drives the matching flow end-to-end:
+`/taskflow:autocode` asks which stack you're on and generates the matching pack; you then run that track's EPCT to build it:
 
-| Track | Pack it generates | Auto-chains into | Reviewers used |
+| Track | Pack it generates | Build with | Reviewers used |
 |---|---|---|---|
 | **React Native** | screen-by-screen (Figma-driven UI) | `/taskflow:epct` | `/taskflow:rnreviewer` · `/taskflow:platformfix` · `/taskflow:qa-module` |
 | **.NET** | endpoint/feature (API-driven, Controller→Service→Repository) | `/taskflow:epct-dotnet` | `/taskflow:pr-reviewer` |
 
-`/taskflow:gitworkflow` and `/taskflow:init` are shared by both tracks. You can also run any EPCT directly: `/taskflow:epct <task>` for RN, `/taskflow:epct-dotnet <task>` for .NET.
+Generating the pack (`autocode`) and building it (`epct` / `epct-dotnet`) are **two separate steps** — autocode stops after creating the folder. `/taskflow:gitworkflow` and `/taskflow:init` are shared by both tracks. You can also run any EPCT directly: `/taskflow:epct <task>` for RN, `/taskflow:epct-dotnet <task>` for .NET.
 
 ## Zero-touch per project (optional)
 
