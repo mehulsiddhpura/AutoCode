@@ -139,13 +139,25 @@ First, **explain what you'll need and where it comes from** (share this — most
 > 3. **`NOTIFY_EMAIL_FROM`** — the "from" address. This **must be a sender you've verified in Brevo** (Senders, Domains & Dedicated IPs → Senders). A bare `@gmail.com`/`@outlook.com`/`@yahoo.com` will be rejected or spam-foldered (see note below).
 > 4. **`NOTIFY_EMAIL_TO`** — where you want the notifications delivered (any inbox, e.g. your work email).
 
-Then:
+Then walk the user through filling in the credentials **in the real file**:
 
-1. **Confirm `.gitignore` protection.** Verify `.gitignore` contains `scripts/notify-email.local.ps1` (from A3). If not, STOP and fix it first — never write a secret to an un-ignored path.
+1. **Confirm `.gitignore` protection.** Verify `.gitignore` contains `scripts/notify-email.local.ps1` (from A3). If not, STOP and fix it first — never create a secret file at an un-ignored path.
 2. **Don't overwrite.** If `scripts/notify-email.local.ps1` already exists, leave it, say "already present", and skip to the test.
-3. **Collect the 4 values** via AskUserQuestion (or ask directly).
-4. **Validate the FROM address.** If `NOTIFY_EMAIL_FROM` is a free-mail domain (`@gmail.com`/`@outlook.com`/`@yahoo.com`), warn: *"Free-mail domains publish a strict DMARC policy, so Brevo can't sign as them — mail to other people will bounce or land in spam. A same-account test may still look fine. Recommend a Brevo-verified domain sender instead."* Let them proceed if they insist, but flag it.
-5. **Write `scripts/notify-email.local.ps1`** yourself (do NOT just point at the `.example` — editing the `.example` is the #1 setup mistake, because the script never reads it). Content = the four real `$env:` lines, prefixed with `# GITIGNORED — never commit.`. Tell the user: *"Created your private credentials file — it's gitignored, so it stays on your machine only."*
+3. **Create the real credentials file `scripts/notify-email.local.ps1`** (a copy of the template, NOT the `.example`) with clearly-labelled placeholders the user will replace. Write exactly:
+
+   ```powershell
+   # GITIGNORED — never commit. Replace each <...> below with your real Brevo values, then save.
+   $env:BREVO_SMTP_KEY    = "<your-brevo-smtp-key>"      # Brevo > SMTP & API > SMTP tab > SMTP key (NOT the API key)
+   $env:BREVO_SMTP_LOGIN  = "<your-brevo-smtp-login>"    # same SMTP page, e.g. 1234abc@smtp-brevo.com
+   $env:NOTIFY_EMAIL_FROM = "<verified-sender@your-domain>"  # a sender you've VERIFIED in Brevo
+   $env:NOTIFY_EMAIL_TO   = "<where-to-send@example.com>"    # inbox that should receive notifications
+   ```
+
+4. **Now tell the user clearly and explicitly to fill it in** — this is the phase they asked about. Say something like:
+   > *"I've created your private credentials file: **`scripts/notify-email.local.ps1`** (it's gitignored, so it stays on your machine only — never committed). **Please open it and replace each `<...>` placeholder with your real Brevo values, then save.** This is the ONLY file you edit — do not edit `notify-email.local.ps1.example` (the script never reads it). When you've saved your changes, tell me and I'll send a test email to confirm it works."*
+   - List where each value comes from (reuse the "what you'll need" list above) so they don't have to hunt.
+   - **Warn on a free-mail FROM:** if they intend to use `@gmail.com`/`@outlook.com`/`@yahoo.com` for `NOTIFY_EMAIL_FROM`, tell them: *"Free-mail domains publish a strict DMARC policy, so Brevo can't sign as them — mail to other people will bounce or land in spam (a test to your own account may still look fine). Use a Brevo-verified domain sender instead."*
+5. **Wait for the user to confirm they've saved the file.** Do not proceed to the test until they say they're done. (If the user would rather not open the file, they can paste the 4 values in chat and you'll fill them in for them — but the file-edit path is the default and keeps secrets out of the chat.)
 
 ---
 

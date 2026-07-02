@@ -129,9 +129,13 @@ signed in, you'll need **4 values** — `init` will ask you for them:
    `scripts/notify-email.ps1`, a template `.example` file, a `.gitignore` rule to protect
    your key, and a notifications table in your `CLAUDE.md` that tells the build when to email.
 2. **Asks if you want email on now** — pick "Configure now" or "Skip for later".
-3. **If you configure:** it asks for the 4 Brevo values above and writes your **private,
-   gitignored** credentials file for you (you never hand-edit the `.example`).
-4. **Sends one real test email** and tells you whether it worked — and if not, exactly what to fix.
+3. **If you configure:** it creates your **private, gitignored** file
+   `scripts/notify-email.local.ps1` (pre-filled with labelled placeholders) and then **asks you
+   to open that file and paste in your 4 Brevo values, then save.** You edit *this* file — never
+   the `.example` (the script never reads the `.example`). Prefer not to open a file? You can
+   paste the values in chat instead and init will fill them in for you.
+4. **Waits for you to save**, then **sends one real test email** and tells you whether it worked —
+   and if not, exactly what to fix.
 
 ### If the test email fails: IP whitelisting
 
