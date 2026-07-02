@@ -11,13 +11,13 @@ First figure out **what kind of project** the user is building — this decides 
 
 | # | Project type | What it is | Per-task unit → folder | Build engine | Reviewers |
 |---|---|---|---|---|---|
-| 1 | **React Native** (mobile frontend) | Mobile app screens (iOS + Android) | screen → `screens/` | `/taskflow:epct` | `rnreviewer`, `platformfix`, `qa-module` |
-| 2 | **.NET — HTML only** | Server-rendered pages (Razor Pages / MVC views), forms post back; no separate SPA/API | page/view → `pages/` | `/taskflow:epct-dotnet` | `pr-reviewer` |
-| 3 | **.NET — Frontend** | A .NET UI (Razor/MVC/Blazor) that calls a backend API | page/view → `pages/` | `/taskflow:epct-dotnet` | `pr-reviewer` |
-| 4 | **.NET — Backend** | Web API only (Controller → Service → Repository, DTOs, EF Core) | endpoint/feature → `endpoints/` | `/taskflow:epct-dotnet` | `pr-reviewer` |
-| 5 | **.NET — Frontend + Backend** | Full-stack: build both the API endpoints and the .NET UI pages | **both** → `pages/` + `endpoints/` | `/taskflow:epct-dotnet` | `pr-reviewer` |
+| 1 | **React Native** (mobile frontend) | Mobile app screens (iOS + Android) | screen → `screens/` | `/taskflow:epct-rn` | `rn-reviewer`, `platformfix-rn`, `qa-module-rn` |
+| 2 | **.NET — HTML only** | Server-rendered pages (Razor Pages / MVC views), forms post back; no separate SPA/API | page/view → `pages/` | `/taskflow:epct-dotnet` | `pr-reviewer-dotnet` |
+| 3 | **.NET — Frontend** | A .NET UI (Razor/MVC/Blazor) that calls a backend API | page/view → `pages/` | `/taskflow:epct-dotnet` | `pr-reviewer-dotnet` |
+| 4 | **.NET — Backend** | Web API only (Controller → Service → Repository, DTOs, EF Core) | endpoint/feature → `endpoints/` | `/taskflow:epct-dotnet` | `pr-reviewer-dotnet` |
+| 5 | **.NET — Frontend + Backend** | Full-stack: build both the API endpoints and the .NET UI pages | **both** → `pages/` + `endpoints/` | `/taskflow:epct-dotnet` | `pr-reviewer-dotnet` |
 
-**Build engine:** type 1 → `/taskflow:epct` (React Native). Types 2–5 → `/taskflow:epct-dotnet` (.NET).
+**Build engine:** type 1 → `/taskflow:epct-rn` (React Native). Types 2–5 → `/taskflow:epct-dotnet` (.NET).
 
 Work the phases in order. Ask only for inputs you don't already have.
 
@@ -137,7 +137,7 @@ Create a new **`{{lowercamel}}`** module mirroring the app's existing feature mo
 Maintain one combined [{{Pascal}}_scenarios.md]({{Pascal}}_scenarios.md); append each screen's scenarios during its EPCT QA phase. Cover happy path, switching/filters, empty/no-data, null-fields, downloads, Android + iOS.
 
 ## Notifications (email)
-Drives `/taskflow:epct`, which runs autonomously and emails the owner at task-start, plan-done, task-done, all-done, and on any blocker via `scripts/notify-email.ps1`. Run `/taskflow:init` once first.
+Drives `/taskflow:epct-rn`, which runs autonomously and emails the owner at task-start, plan-done, task-done, all-done, and on any blocker via `scripts/notify-email.ps1`. Run `/taskflow:init` once first.
 
 ## Status legend
 ✅ API done · 🔲 app-side only · ⬜ pending
@@ -327,15 +327,15 @@ If the project has no `scripts/notify-email.ps1`, run **`/taskflow:init`** first
 - Summary: folder path (`<kebab-name>-tasks/`), **project type** (1–5), what's inside (`screens/` / `pages/` / `endpoints/` — or both), and task count (Task 1 → N).
 - Then tell the user: *"The task pack is ready. When you want to start building, run the command below — the build runs autonomously and emails you at task-start, plan-done, task-done, and all-done (stopping only for a blocker)."*
 
-**Give the user the command that matches their project type** (build engine: type 1 → `/taskflow:epct`; types 2–5 → `/taskflow:epct-dotnet`):
+**Give the user the command that matches their project type** (build engine: type 1 → `/taskflow:epct-rn`; types 2–5 → `/taskflow:epct-dotnet`):
 
-- **Type 1 — React Native:** `/taskflow:epct Build the complete {{Module}} module from <kebab-name>-tasks/README.md — one task at a time (Task 1 → N), following the README + each screens/*.md spec and the email notifications.`
+- **Type 1 — React Native:** `/taskflow:epct-rn Build the complete {{Module}} module from <kebab-name>-tasks/README.md — one task at a time (Task 1 → N), following the README + each screens/*.md spec and the email notifications.`
 - **Types 2 & 3 — .NET UI (HTML-only / Frontend):** `/taskflow:epct-dotnet Build the complete {{Module}} UI from <kebab-name>-tasks/README.md — one task at a time (Task 1 → N), following the README + each pages/*.md spec and the email notifications.`
 - **Type 4 — .NET Backend:** `/taskflow:epct-dotnet Build the complete {{Module}} API from <kebab-name>-tasks/README.md — one task at a time (Task 1 → N), following the README + each endpoints/*.md spec and the email notifications.`
 - **Type 5 — .NET Frontend + Backend:** `/taskflow:epct-dotnet Build the complete {{Module}} feature (API + UI) from <kebab-name>-tasks/README.md — one task at a time in the README's order (endpoints before the pages that use them), following each endpoints/*.md and pages/*.md spec and the email notifications.`
-- **Single task:** point the matching engine at one spec file, e.g. `/taskflow:epct <kebab-name>-tasks/screens/NN_<screen>.md`, or `/taskflow:epct-dotnet <kebab-name>-tasks/pages/NN_<page>.md` / `.../endpoints/NN_<feature>.md`.
+- **Single task:** point the matching engine at one spec file, e.g. `/taskflow:epct-rn <kebab-name>-tasks/screens/NN_<screen>.md`, or `/taskflow:epct-dotnet <kebab-name>-tasks/pages/NN_<page>.md` / `.../endpoints/NN_<feature>.md`.
 
-Whichever EPCT the user then runs works tasks one at a time and **emails the owner at task-start, plan-done, task-done, and all-done** (no approval gates at plan or QA), only STOPPING for a genuine blocker / needed intervention (with a summary email). Reviewers: React Native → `/taskflow:rnreviewer` + `/taskflow:platformfix`; all .NET types → `/taskflow:pr-reviewer`.
+Whichever EPCT the user then runs works tasks one at a time and **emails the owner at task-start, plan-done, task-done, and all-done** (no approval gates at plan or QA), only STOPPING for a genuine blocker / needed intervention (with a summary email). Reviewers: React Native → `/taskflow:rn-reviewer` + `/taskflow:platformfix-rn`; all .NET types → `/taskflow:pr-reviewer-dotnet`.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-name: pr-reviewer
+name: pr-reviewer-dotnet
 description: Senior production-grade PR reviewer for .NET 8 Web API, React.js, React Native, and Android Kotlin. Detects correctness, security, performance, multi-tenant, mobile-release, and DevSecOps issues before production.
 model: opus
 ---

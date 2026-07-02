@@ -1,6 +1,6 @@
 ---
 name: init
-description: One-time, guided project setup for the taskflow email notifications. Writes scripts/notify-email.ps1, gitignores the secret, appends the Development Notifications table to CLAUDE.md, and (optionally) configures + tests your Brevo email credentials. Run once per project before using /taskflow:autocode or /taskflow:epct.
+description: One-time, guided project setup for the taskflow email notifications. Writes scripts/notify-email.ps1, gitignores the secret, appends the Development Notifications table to CLAUDE.md, and (optionally) configures + tests your Brevo email credentials. Run once per project before using /taskflow:autocode or /taskflow:epct-rn.
 ---
 
 # init — guided setup for taskflow email notifications
@@ -101,7 +101,7 @@ Say why: *"This tells the build workflow WHEN to email you. It's the rulebook th
 ```markdown
 ## MANDATORY: Development Notifications (email)
 
-When running a multi-task pack with `/taskflow:epct` or `/taskflow:epct-dotnet`, work the tasks one at a time and **run autonomously — do NOT stop for approval at plan or QA.** Just **email the task owner at the points below** to keep them informed. Send with:
+When running a multi-task pack with `/taskflow:epct-rn` or `/taskflow:epct-dotnet`, work the tasks one at a time and **run autonomously — do NOT stop for approval at plan or QA.** Just **email the task owner at the points below** to keep them informed. Send with:
 `powershell -ExecutionPolicy Bypass -NoProfile -File scripts/notify-email.ps1 -Subject "<subject>" -Body "<body>"`
 (The `-ExecutionPolicy Bypass -NoProfile` flags avoid the "running scripts is disabled on this system" error without changing any machine setting. Use `pwsh` instead of `powershell` if only PowerShell 7+ is installed.)
 Email failures are non-fatal (log and continue). The ONLY time you STOP is a genuine blocker / needed intervention (row B).
@@ -227,4 +227,4 @@ Report a short, structured wrap-up so the user knows the state and the next move
 1. **What was created vs. already present** — list the files (ps1 / example / .gitignore line / CLAUDE.md section).
 2. **Email status** — one of: *Configured & test passed* · *Configured but test failed (with the fix to try)* · *Skipped (how to enable later)*.
 3. **What to do next** — always end with:
-   > *"Setup is done. Next, scaffold a feature with `/taskflow:autocode <Module>` (creates the task-pack folder), then start the build with `/taskflow:epct` (React Native) or `/taskflow:epct-dotnet` (.NET). You'll get emails at task-start, plan-done, task-done, and all-done."*
+   > *"Setup is done. Next, scaffold a feature with `/taskflow:autocode <Module>` (creates the task-pack folder), then start the build with `/taskflow:epct-rn` (React Native) or `/taskflow:epct-dotnet` (.NET). You'll get emails at task-start, plan-done, task-done, and all-done."*

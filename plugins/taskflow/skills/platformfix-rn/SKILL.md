@@ -1,5 +1,5 @@
 ---
-name: platformfix
+name: platformfix-rn
 description: React Native iOS/Android platform-fix handbook — exact code patterns for keyboard avoidance, modal stacking, shadows/elevation, safe area, back button, status bar, and build artifact cleanup, with a quick decision table.
 ---
 

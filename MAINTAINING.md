@@ -11,13 +11,13 @@ This repo is **both a Claude Code marketplace and the plugin** it serves.
 |---|---|
 | `/taskflow:autocode <Module>` | **Headliner.** Interviews you, reads the PRD + Figma (+ optional API doc), generates a `<module>-tasks/` pack (README + per-screen specs + QA scenarios + CSV), then **stops and tells you the command to start the build** (it does not auto-start). |
 | `/taskflow:init` | One-time per-project setup: writes `scripts/notify-email.ps1`, gitignores the secret, and adds the Development Notifications table to `CLAUDE.md`. |
-| `/taskflow:epct <task>` | 5-phase Explore → Plan → Code → Review → QA for React Native. Runs autonomously with email notifications; no approval gates. Committing is not part of the flow — run `/taskflow:gitworkflow` separately. |
+| `/taskflow:epct-rn <task>` | 5-phase Explore → Plan → Code → Review → QA for React Native. Runs autonomously with email notifications; no approval gates. Committing is not part of the flow — run `/taskflow:gitworkflow` separately. |
 | `/taskflow:epct-dotnet <task>` | The EPCT flow for any .NET work — API endpoints, Razor/MVC/Blazor pages, or full-stack (Explore → Plan → Code → Test → QA), also autonomous. |
-| `/taskflow:rnreviewer` | Senior React Native + TypeScript reviewer (10 dimensions). |
-| `/taskflow:pr-reviewer` | Production PR reviewer for .NET / React / RN / Kotlin. |
+| `/taskflow:rn-reviewer` | Senior React Native + TypeScript reviewer (10 dimensions). |
+| `/taskflow:pr-reviewer-dotnet` | Production PR reviewer for .NET / React / RN / Kotlin. |
 | `/taskflow:gitworkflow` | Sync main → feature branch → staged-files table → structured commit → push. |
-| `/taskflow:qa-module <Module>` | Automated QA pipeline (discover, tests, device verify, report). |
-| `/taskflow:platformfix <symptom>` | iOS/Android platform-fix reference handbook. |
+| `/taskflow:qa-module-rn <Module>` | Automated QA pipeline (discover, tests, device verify, report). |
+| `/taskflow:platformfix-rn <symptom>` | iOS/Android platform-fix reference handbook. |
 
 ### Project types — one mobile track + four .NET shapes
 
@@ -25,15 +25,15 @@ This repo is **both a Claude Code marketplace and the plugin** it serves.
 
 | # | Project type | Pack unit → folder | Build with | Reviewers |
 |---|---|---|---|---|
-| 1 | **React Native** (mobile) | screen → `screens/` | `/taskflow:epct` | `rnreviewer` · `platformfix` · `qa-module` |
-| 2 | **.NET — HTML only** (Razor/MVC) | page → `pages/` | `/taskflow:epct-dotnet` | `pr-reviewer` |
-| 3 | **.NET — Frontend** (UI calling an API) | page → `pages/` | `/taskflow:epct-dotnet` | `pr-reviewer` |
-| 4 | **.NET — Backend** (Web API) | endpoint → `endpoints/` | `/taskflow:epct-dotnet` | `pr-reviewer` |
-| 5 | **.NET — Frontend + Backend** | both → `pages/` + `endpoints/` | `/taskflow:epct-dotnet` | `pr-reviewer` |
+| 1 | **React Native** (mobile) | screen → `screens/` | `/taskflow:epct-rn` | `rn-reviewer` · `platformfix-rn` · `qa-module-rn` |
+| 2 | **.NET — HTML only** (Razor/MVC) | page → `pages/` | `/taskflow:epct-dotnet` | `pr-reviewer-dotnet` |
+| 3 | **.NET — Frontend** (UI calling an API) | page → `pages/` | `/taskflow:epct-dotnet` | `pr-reviewer-dotnet` |
+| 4 | **.NET — Backend** (Web API) | endpoint → `endpoints/` | `/taskflow:epct-dotnet` | `pr-reviewer-dotnet` |
+| 5 | **.NET — Frontend + Backend** | both → `pages/` + `endpoints/` | `/taskflow:epct-dotnet` | `pr-reviewer-dotnet` |
 
-Build engine: type 1 → `/taskflow:epct`; types 2–5 → `/taskflow:epct-dotnet`. Inputs autocode accepts: a plain description, and optionally a **PRD**, a **Figma link** (UI types), and **API documentation** (Backend / Frontend-that-calls-an-API).
+Build engine: type 1 → `/taskflow:epct-rn`; types 2–5 → `/taskflow:epct-dotnet`. Inputs autocode accepts: a plain description, and optionally a **PRD**, a **Figma link** (UI types), and **API documentation** (Backend / Frontend-that-calls-an-API).
 
-Generating the pack (`autocode`) and building it (`epct` / `epct-dotnet`) are **two separate steps** — autocode stops after creating the folder. `/taskflow:gitworkflow` and `/taskflow:init` are shared by all types. You can also run an EPCT directly: `/taskflow:epct <task>` (React Native) or `/taskflow:epct-dotnet <task>` (any .NET type).
+Generating the pack (`autocode`) and building it (`epct` / `epct-dotnet`) are **two separate steps** — autocode stops after creating the folder. `/taskflow:gitworkflow` and `/taskflow:init` are shared by all types. You can also run an EPCT directly: `/taskflow:epct-rn <task>` (React Native) or `/taskflow:epct-dotnet <task>` (any .NET type).
 
 ## Zero-touch per project (optional)
 
@@ -65,8 +65,8 @@ AutoCode/
 ├── .claude-plugin/marketplace.json     # the marketplace
 └── plugins/taskflow/
     ├── .claude-plugin/plugin.json      # the plugin manifest
-    ├── skills/<name>/SKILL.md          # autocode, init, epct, epct-dotnet, rnreviewer,
-    │                                   # pr-reviewer, gitworkflow, qa-module, platformfix
+    ├── skills/<name>/SKILL.md          # autocode, init, epct, epct-dotnet, rn-reviewer,
+    │                                   # pr-reviewer-dotnet, gitworkflow, qa-module-rn, platformfix-rn
     └── scripts/                        # notify-email.ps1 / .sh / .local.ps1.example
 ```
 

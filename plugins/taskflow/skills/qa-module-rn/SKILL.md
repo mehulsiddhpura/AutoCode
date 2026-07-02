@@ -1,5 +1,5 @@
 ---
-name: qa-module
+name: qa-module-rn
 description: Full automated QA pipeline for any React Native module — discover files, write/run Jest service/ViewModel/component tests, run device verification, and produce a QA report.
 ---
 

@@ -1,5 +1,5 @@
 ---
-name: epct
+name: epct-rn
 description: Structured 5-phase Explore-Plan-Code-Review-QA workflow for React Native features and non-trivial bug fixes. Runs autonomously and emails the task owner at start, plan-done, task-done, all-done, and on blockers — no approval gates.
 ---
 
@@ -36,7 +36,7 @@ Email failures are non-fatal (log and continue). A real blocker still STOPS the 
 ### Platform
 - Test every change on BOTH iOS and Android before marking complete
 - Use `Platform.OS === 'ios'` / `Platform.select()` for platform divergence — never guess
-- Run `/taskflow:platformfix` when implementing keyboard, modals, shadows, safe area, back button, or status bar
+- Run `/taskflow:platformfix-rn` when implementing keyboard, modals, shadows, safe area, back button, or status bar
 
 ### Styling
 - Always use `scale()` for horizontal/font sizes and `verticalScale()` for heights from `app/utils/scalingUtils.tsx`
@@ -101,7 +101,7 @@ Email failures are non-fatal (log and continue). A real blocker still STOPS the 
 ## Phase 3: Code
 
 **Before writing any code, verify compliance with:**
-- [ ] Platform: Will this work on both iOS and Android? → open `/taskflow:platformfix` now if the task touches keyboard, modals, shadows, safe area, back button, or status bar
+- [ ] Platform: Will this work on both iOS and Android? → open `/taskflow:platformfix-rn` now if the task touches keyboard, modals, shadows, safe area, back button, or status bar
 - [ ] Styling: scale()/verticalScale() used, StyleSheet.create, COLORS constants — no raw pixels or hex
 - [ ] Performance: React.memo on list items, useCallback on handlers, useMemo on derived values, minimal Zustand slice
 - [ ] Navigation: New screens registered in types.tsx and RootNavigator.tsx
@@ -109,7 +109,7 @@ Email failures are non-fatal (log and continue). A real blocker still STOPS the 
 - [ ] Security: No PII logging, no hardcoded secrets, input validated before API call
 - [ ] Completeness: Null guards on API fields, useEffect cleanup present, no TODO/console.log
 
-**While coding — use `/taskflow:platformfix` as a reference handbook:**
+**While coding — use `/taskflow:platformfix-rn` as a reference handbook:**
 - Open it whenever you need the correct pattern for: KAV, modal nesting, shadows/elevation, safe area, back button, status bar, date picker, font scaling, ripple, or build cleanup
 - It is NOT a step — invoke it on demand as platform questions arise during implementation
 
@@ -121,7 +121,7 @@ Email failures are non-fatal (log and continue). A real blocker still STOPS the 
 
 ## Phase 4: Review
 
-Invoke `/taskflow:rnreviewer` as a **separate agent** to review all changed files against the full React Native + TypeScript checklist.
+Invoke `/taskflow:rn-reviewer` as a **separate agent** to review all changed files against the full React Native + TypeScript checklist.
 
 The reviewer checks 10 dimensions:
 1. TypeScript safety (no `any`, null guards, explicit return types)
@@ -136,7 +136,7 @@ The reviewer checks 10 dimensions:
 10. Debug artifacts (no console.log, TODO, FIXME, commented-out code)
 
 **After the review:**
-- Fix all **MUST FIX (P0)** issues immediately — re-invoke `/taskflow:rnreviewer` after fixes
+- Fix all **MUST FIX (P0)** issues immediately — re-invoke `/taskflow:rn-reviewer` after fixes
 - Document **SHOULD FIX (P1)** items in the QA Report if deferred
 - Proceed to Phase 5 only when the reviewer verdict is **Ready to proceed** or **Proceed after SHOULD FIX items addressed**
 
@@ -156,7 +156,7 @@ The reviewer checks 10 dimensions:
 | 6 | **Styling audit** | scale()/verticalScale() everywhere, StyleSheet.create only, COLORS used, no raw pixels |
 | 7 | **Navigation audit** | New screens registered; back-nav side effects use signals not route params |
 | 8 | **Principles compliance** | Re-verify ALL Development Principles above |
-| 9 | **rnreviewer passed** | No MUST FIX issues remain from Phase 4 review |
+| 9 | **rn-reviewer passed** | No MUST FIX issues remain from Phase 4 review |
 | 10 | **No debug artifacts** | No console.log, no TODO/FIXME, no commented-out code |
 
 ### Step 2: Requirement Traceability
@@ -170,8 +170,8 @@ The reviewer checks 10 dimensions:
 - If any shared component in `app/screens/component/` was modified, trace all its callers
 - If any Zustand store action was modified, verify all subscribers still behave correctly
 
-### Step 4: Fresh-Eyes `/taskflow:rnreviewer`
-If Phase 4 review was done by the same agent that wrote the code, invoke `/taskflow:rnreviewer` again as a **separate fresh-context agent** to catch blind spots.
+### Step 4: Fresh-Eyes `/taskflow:rn-reviewer`
+If Phase 4 review was done by the same agent that wrote the code, invoke `/taskflow:rn-reviewer` again as a **separate fresh-context agent** to catch blind spots.
 - Fix any new **MUST FIX** issues, re-run reviewer
 - Document **SHOULD FIX** items in the QA Report
 

@@ -8,7 +8,7 @@
     {
       "name": "taskflow",
       "source": "./plugins/taskflow",
-      "description": "Slash commands: /taskflow:autocode, /taskflow:init, /taskflow:epct, /taskflow:epct-dotnet, /taskflow:rnreviewer, /taskflow:pr-reviewer, /taskflow:gitworkflow, /taskflow:qa-module, /taskflow:platformfix"
+      "description": "Slash commands: /taskflow:autocode, /taskflow:init, /taskflow:epct-rn, /taskflow:epct-dotnet, /taskflow:rn-reviewer, /taskflow:pr-reviewer-dotnet, /taskflow:gitworkflow, /taskflow:qa-module-rn, /taskflow:platformfix-rn"
     }
   ]
 }

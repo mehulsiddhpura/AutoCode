@@ -76,7 +76,7 @@ command to start building. *(It does not build automatically.)*
 ### Step 2 — build it
 
 ```text
-/taskflow:epct Build the complete Payroll module from payroll-tasks/README.md — one task at a time.
+/taskflow:epct-rn Build the complete Payroll module from payroll-tasks/README.md — one task at a time.
 ```
 *(Use `/taskflow:epct-dotnet` for a .NET backend module. You don't have to type this by
 hand — Step 1 prints the exact command with your module name already filled in; just copy-paste it.)*
@@ -93,15 +93,15 @@ all tasks done. It only stops to ask you if it hits a **blocker**.
 |---|---|
 | `/taskflow:autocode <Module>` | **Start here.** Ask it to build a feature (describe it, or share a PRD/Figma/API doc) → it creates a task-pack folder. Then run `epct`/`epct-dotnet` to build it. |
 | `/taskflow:init` | One-time project setup — guided, step-by-step email setup (run once per project). |
-| `/taskflow:epct <task>` | Autonomous build for **React Native**: Explore → Plan → Code → Review → QA (emails you at each milestone). |
+| `/taskflow:epct-rn <task>` | Autonomous build for **React Native**: Explore → Plan → Code → Review → QA (emails you at each milestone). |
 | `/taskflow:epct-dotnet <task>` | The same autonomous build for **.NET** (API endpoints, Razor/MVC/Blazor pages, or full-stack): Explore → Plan → Code → Test → QA. |
-| `/taskflow:rnreviewer` | Reviews React Native + TypeScript code. |
-| `/taskflow:pr-reviewer` | Reviews a PR (.NET / React / React Native / Kotlin). |
-| `/taskflow:qa-module <Module>` | Runs an automated QA pass on a module. |
+| `/taskflow:rn-reviewer` | Reviews React Native + TypeScript code. |
+| `/taskflow:pr-reviewer-dotnet` | Reviews a PR (.NET / React / React Native / Kotlin). |
+| `/taskflow:qa-module-rn <Module>` | Runs an automated QA pass on a module. |
 | `/taskflow:gitworkflow` | Branch, commit, and push with a clean, structured flow. |
-| `/taskflow:platformfix <symptom>` | iOS/Android fix reference for common platform issues. |
+| `/taskflow:platformfix-rn <symptom>` | iOS/Android fix reference for common platform issues. |
 
-You can always run a command on its own — e.g. `/taskflow:epct Add login screen`.
+You can always run a command on its own — e.g. `/taskflow:epct-rn Add login screen`.
 
 ---
 

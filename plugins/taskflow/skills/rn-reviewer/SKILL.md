@@ -1,5 +1,5 @@
 ---
-name: rnreviewer
+name: rn-reviewer
 description: Senior React Native + TypeScript code reviewer. Detects correctness, platform-specific, performance, styling, navigation, state management, API, security, and TypeScript issues before production.
 model: opus
 ---

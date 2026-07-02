@@ -153,7 +153,7 @@ Compare Phase 2 (Plan) against Phase 3 (Code) implementation:
 
 ### Step 4: Fresh-Eyes PR Review
 
-Invoke `/taskflow:pr-reviewer` as a **separate agent** to review all changes with fresh context. This catches blind spots that the coding Claude missed. The PR reviewer must check all 8 dimensions: Correctness, Security, Performance, Database/EF Core, Design/Patterns, Code Quality, API Contract, Testing.
+Invoke `/taskflow:pr-reviewer-dotnet` as a **separate agent** to review all changes with fresh context. This catches blind spots that the coding Claude missed. The PR reviewer must check all 8 dimensions: Correctness, Security, Performance, Database/EF Core, Design/Patterns, Code Quality, API Contract, Testing.
 
 - If PR reviewer finds **MUST FIX** issues → fix them, re-run tests, re-run PR reviewer
 - If PR reviewer finds only **SHOULD FIX** or **NICE TO HAVE** → document in QA Report, proceed
@@ -177,7 +177,7 @@ Verify against the task's Definition of Done from Phase 2:
 7. Validate all edge cases are handled (nulls, empty, boundaries)
 8. Re-check Development Principles compliance checklist
 9. Compare implementation against Phase 2 plan — verify all items implemented, no scope drift
-10. Run `/taskflow:pr-reviewer` for fresh-eyes review — fix any MUST FIX issues
+10. Run `/taskflow:pr-reviewer-dotnet` for fresh-eyes review — fix any MUST FIX issues
 11. Verify all Definition of Done criteria are met
 
 ### QA Report (Required Output)
