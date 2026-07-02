@@ -1,9 +1,11 @@
 ---
 name: epct-dotnet
-description: Structured 5-phase Explore-Plan-Code-Test-QA workflow for .NET / backend features and non-trivial bug fixes. Runs autonomously and emails the task owner at start, plan-done, task-done, all-done, and on blockers — no approval gates. Includes security, authorization, and database principles.
+description: Structured 5-phase Explore-Plan-Code-Test-QA workflow for any .NET task — Web API endpoints, Razor/MVC/Blazor UI pages, or full-stack features (and non-trivial bug fixes). Runs autonomously and emails the task owner at start, plan-done, task-done, all-done, and on blockers — no approval gates. Includes security, authorization, and database principles.
 ---
 
 # EPCT — Standard (.NET)
+
+Use this for **any .NET task** — a Web API endpoint, a server-rendered page (Razor Pages / MVC), a Blazor/Frontend page that calls an API, or a full-stack feature. The backend-focused principles below apply to API/data work; for UI-page tasks, apply the ones that fit (authorization, validation, null-safety, no secrets, output encoding/anti-forgery) and skip what doesn't. When a task pack contains both `endpoints/` and `pages/`, build each endpoint **before** the page that consumes it.
 
 **Autonomous flow — notify, don't gate.** Work tasks one at a time (Task 1 → N) and run each task's phases straight through **without stopping for approval**. Email the task owner at the notification points below. The only time you STOP is a genuine **blocker** or a decision that truly requires human intervention.
 

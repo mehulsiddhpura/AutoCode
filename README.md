@@ -36,43 +36,54 @@ That's it. Now type `/taskflow:` and your commands will appear in the list.
 
 ## Try it
 
-Building a feature is **two steps** — first scaffold the task pack, then start the build.
+Building a feature is **three simple steps**. Type each command inside Claude Code.
 
-> **Note:** `Payroll` below is just an **example module name** — replace it with your own
-> (e.g. `Invoices`, `Login`, `Reports`). Whatever name you use, autocode creates a
-> matching `<name>-tasks/` folder, so `Invoices` → `invoices-tasks/`.
+> **Note:** `Payroll` below is just an **example** — use your own name (`Invoices`, `Login`, …).
+> Whatever you name it, autocode makes a matching `<name>-tasks/` folder (`Invoices` → `invoices-tasks/`).
 
-**Generic form** (what to type for any module — replace `<Module>`):
+### Step 0 — set up the project (once)
 
 ```text
-# Once per project — sets up the workflow (and optional email notifications)
 /taskflow:init
-
-# Step 1 — scaffold the task pack (creates a <module>-tasks/ folder)
-/taskflow:autocode <Module>
-
-# Step 2 — when you're ready, start building from that pack
-/taskflow:epct Build the complete <Module> module from <module>-tasks/README.md — one task at a time.
-#   (use /taskflow:epct-dotnet instead for a .NET backend module)
 ```
 
-**Filled-in example** (using the module name `Payroll`):
+**What you'll get:** a guided setup that creates the workflow files and (optionally) turns on
+email notifications. Run it once per project. → see [email setup](#setting-up-email-notifications-optional-but-recommended) below.
+
+### Step 1 — describe your feature → get a task pack
 
 ```text
 /taskflow:autocode Payroll
-/taskflow:epct Build the complete Payroll module from payroll-tasks/README.md — one task at a time.
 ```
 
-You don't have to memorize the Step 2 text — after Step 1, autocode **prints the exact
-build command with your module name already filled in**, so you just copy-paste it.
+**What happens:** it asks you, in plain words, *what you want to build* — the feature name, a
+one-line goal, and a list of the screens/pages/actions you want. No formal document needed —
+though you can attach any of a **PRD**, a **Figma link**, or **API documentation** for a better
+pack. It also asks what kind of project it is (pick one):
 
-**Step 1** (`autocode`) asks you a few questions (module name, your PRD, a Figma
-link for React Native, or an API doc for .NET), then generates the task-pack
-folder and **stops** — it does *not* start building on its own.
+| Project type | What it builds |
+|---|---|
+| **React Native** | Mobile app screens (iOS + Android) |
+| **.NET — HTML only** | Server-rendered pages (Razor Pages / MVC) |
+| **.NET — Frontend** | A .NET UI (Razor/MVC/Blazor) that calls an API |
+| **.NET — Backend** | A Web API (no UI) |
+| **.NET — Frontend + Backend** | Full-stack: the API **and** the .NET UI |
 
-**Step 2** (`epct` / `epct-dotnet`) is when the actual build runs — task-by-task on
-its own, emailing you when each task starts, when its plan is ready, when it's done,
-and when the whole module is finished. It only stops to ask you if it hits a blocker.
+**What you'll get:** a new **`payroll-tasks/`** folder — one file per task (a screen, a page, or
+an endpoint), a build-order list, and a `README.md`. Then it **stops** and shows you the exact
+command to start building. *(It does not build automatically.)*
+
+### Step 2 — build it
+
+```text
+/taskflow:epct Build the complete Payroll module from payroll-tasks/README.md — one task at a time.
+```
+*(Use `/taskflow:epct-dotnet` for a .NET backend module. You don't have to type this by
+hand — Step 1 prints the exact command with your module name already filled in; just copy-paste it.)*
+
+**What you'll get:** the build runs on its own, one task at a time (Explore → Plan → Code →
+Review → QA), and **emails you** at each milestone — task started, plan ready, task done, and
+all tasks done. It only stops to ask you if it hits a **blocker**.
 
 ---
 
@@ -80,10 +91,10 @@ and when the whole module is finished. It only stops to ask you if it hits a blo
 
 | Command | What it does |
 |---|---|
-| `/taskflow:autocode <Module>` | **Start here.** Turns a PRD (+ Figma or API doc) into a task-pack folder. Then run `epct`/`epct-dotnet` to build it. |
+| `/taskflow:autocode <Module>` | **Start here.** Ask it to build a feature (describe it, or share a PRD/Figma/API doc) → it creates a task-pack folder. Then run `epct`/`epct-dotnet` to build it. |
 | `/taskflow:init` | One-time project setup — guided, step-by-step email setup (run once per project). |
 | `/taskflow:epct <task>` | Autonomous build for **React Native**: Explore → Plan → Code → Review → QA (emails you at each milestone). |
-| `/taskflow:epct-dotnet <task>` | The same autonomous build for **.NET / backend**: Explore → Plan → Code → Test → QA. |
+| `/taskflow:epct-dotnet <task>` | The same autonomous build for **.NET** (API endpoints, Razor/MVC/Blazor pages, or full-stack): Explore → Plan → Code → Test → QA. |
 | `/taskflow:rnreviewer` | Reviews React Native + TypeScript code. |
 | `/taskflow:pr-reviewer` | Reviews a PR (.NET / React / React Native / Kotlin). |
 | `/taskflow:qa-module <Module>` | Runs an automated QA pass on a module. |
@@ -112,12 +123,26 @@ signed in, you'll need **4 values** — `init` will ask you for them:
 |---|---|
 | **SMTP key** | **SMTP & API → SMTP** tab → your SMTP key (this is *not* the API key) |
 | **SMTP login** | Same SMTP page, e.g. `1234abc@smtp-brevo.com` |
-| **From address** | A sender you've **verified** under **Senders, Domains & Dedicated IPs** |
+| **From address** | A sender you've **verified** (see steps below) |
 | **To address** | Any inbox where you want the notifications delivered |
 
-> ⚠️ **Use a verified sender for the "From" address.** A plain `@gmail.com` / `@outlook.com`
-> "From" gets rejected or spam-foldered (those domains block Brevo from signing as them).
-> A test to your own account may still look fine — but mail to teammates won't arrive.
+#### Add & verify your "From" sender in Brevo (required)
+
+Brevo won't send from an address you haven't verified. To add one:
+
+1. In Brevo, click your **account name (top-right) → Senders, Domains & Dedicated IPs**
+   (or **Settings → Senders & Domains**) — direct link: <https://app.brevo.com/senders/list>
+2. Open the **Senders** tab → **Add a sender** → enter a name and the from-email → **Save**.
+3. Brevo emails a **confirmation link to that address** — open it and click to **verify**.
+4. Once it shows a green **"verified"** check, use that exact address as your **From address**.
+
+*(Tip: to make any `@yourcompany.com` address work, verify the whole **domain** under the
+Domains tab via DNS records — but one verified sender is enough to get started.)*
+
+> ⚠️ **Don't use a plain `@gmail.com` / `@outlook.com` / `@yahoo.com` as the From address.**
+> Those domains block Brevo from signing as them, so mail gets rejected or spam-foldered. A test
+> to your own account may still look fine — but mail to teammates won't arrive. Use a verified
+> sender on your own domain.
 
 ### What `init` does
 
@@ -129,13 +154,38 @@ signed in, you'll need **4 values** — `init` will ask you for them:
    `scripts/notify-email.ps1`, a template `.example` file, a `.gitignore` rule to protect
    your key, and a notifications table in your `CLAUDE.md` that tells the build when to email.
 2. **Asks if you want email on now** — pick "Configure now" or "Skip for later".
-3. **If you configure:** it creates your **private, gitignored** file
-   `scripts/notify-email.local.ps1` (pre-filled with labelled placeholders) and then **asks you
-   to open that file and paste in your 4 Brevo values, then save.** You edit *this* file — never
-   the `.example` (the script never reads the `.example`). Prefer not to open a file? You can
-   paste the values in chat instead and init will fill them in for you.
-4. **Waits for you to save**, then **sends one real test email** and tells you whether it worked —
-   and if not, exactly what to fix.
+3. **If you configure:** it creates your **private, gitignored** credentials file and then asks
+   you to fill it in. Do this:
+   1. Open **`scripts/notify-email.local.ps1`** (in *your project* folder). It's gitignored, so it
+      never gets committed.
+   2. Replace the 4 placeholders with your real Brevo values (from the table above) and **save**:
+      ```powershell
+      $env:BREVO_SMTP_KEY    = "your-smtp-key"
+      $env:BREVO_SMTP_LOGIN  = "1234abc@smtp-brevo.com"
+      $env:NOTIFY_EMAIL_FROM = "verified-sender@your-domain.com"
+      $env:NOTIFY_EMAIL_TO   = "you@example.com"
+      ```
+   3. ⚠️ Edit **`notify-email.local.ps1`** only — *not* `notify-email.local.ps1.example` (the
+      script never reads the `.example`; editing it is the #1 setup mistake).
+   4. Tell Claude **"done"**.
+
+   *(Prefer not to open a file? You can paste the 4 values in chat instead and init will write
+   them into the file for you.)*
+4. **It then sends one real test email.**
+   **What you'll get:** a `taskflow test` email in your **To** inbox (check spam on the first send).
+   If it arrives, you're fully set up. If not, init tells you exactly what to fix — see below.
+
+### If PowerShell says "running scripts is disabled on this system"
+
+This is a Windows **execution-policy** block, not an email problem. The fix is to run the sender
+with a per-command bypass (it changes no machine setting):
+
+```text
+powershell -ExecutionPolicy Bypass -NoProfile -File scripts/notify-email.ps1 -Subject "taskflow test" -Body "hello"
+```
+
+The plugin already uses this form everywhere, so you normally won't hit it — but if you run the
+script manually and see the error, add `-ExecutionPolicy Bypass -NoProfile` as shown.
 
 ### If the test email fails: IP whitelisting
 

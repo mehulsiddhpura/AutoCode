@@ -16,7 +16,7 @@
   Set -To / -From / -Login (and the Brevo key) to your own values, or pass them in.
 
 .EXAMPLE
-  powershell -File scripts/notify-email.ps1 -Subject "[TASK-1] Done" -Body "Shipped on feature/x"
+  powershell -ExecutionPolicy Bypass -NoProfile -File scripts/notify-email.ps1 -Subject "[TASK-1] Done" -Body "Shipped on feature/x"
 #>
 param(
     [Parameter(Mandatory = $true)][string]$Subject,
