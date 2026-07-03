@@ -95,6 +95,7 @@ all tasks done. It only stops to ask you if it hits a **blocker**.
 | `/taskflow:init` | One-time project setup — guided, step-by-step email setup (run once per project). |
 | `/taskflow:epct-rn <task>` | Autonomous build for **React Native**: Explore → Plan → Code → Review → QA (emails you at each milestone). |
 | `/taskflow:epct-dotnet <task>` | The same autonomous build for **.NET** (API endpoints, Razor/MVC/Blazor pages, or full-stack): Explore → Plan → Code → Test → QA. |
+| `/taskflow:epct-design-dotnet <task>` | Theme-locked UI builder for **.NET HTML-only** (ASP.NET MVC Razor + jQuery + Bootstrap). Studies your house style, then builds native-looking pages with static demo data. |
 | `/taskflow:rn-reviewer` | Reviews React Native + TypeScript code. |
 | `/taskflow:pr-reviewer-dotnet` | Reviews a PR (.NET / React / React Native / Kotlin). |
 | `/taskflow:qa-module-rn <Module>` | Runs an automated QA pass on a module. |

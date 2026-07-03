@@ -1,6 +1,6 @@
 {
   "name": "taskflow",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Turn a PRD + Figma file into an EPCT task pack and build it task-by-task autonomously with email notifications at each milestone.",
   "author": {
     "name": "MN001906"

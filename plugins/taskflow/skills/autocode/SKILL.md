@@ -12,12 +12,12 @@ First figure out **what kind of project** the user is building — this decides 
 | # | Project type | What it is | Per-task unit → folder | Build engine | Reviewers |
 |---|---|---|---|---|---|
 | 1 | **React Native** (mobile frontend) | Mobile app screens (iOS + Android) | screen → `screens/` | `/taskflow:epct-rn` | `rn-reviewer`, `platformfix-rn`, `qa-module-rn` |
-| 2 | **.NET — HTML only** | Server-rendered pages (Razor Pages / MVC views), forms post back; no separate SPA/API | page/view → `pages/` | `/taskflow:epct-dotnet` | `pr-reviewer-dotnet` |
+| 2 | **.NET — HTML only** | Server-rendered UI (ASP.NET MVC Razor + jQuery + Bootstrap), theme-locked, static demo data by default | page/view → `pages/` | `/taskflow:epct-design-dotnet` | built-in Design QA |
 | 3 | **.NET — Frontend** | A .NET UI (Razor/MVC/Blazor) that calls a backend API | page/view → `pages/` | `/taskflow:epct-dotnet` | `pr-reviewer-dotnet` |
 | 4 | **.NET — Backend** | Web API only (Controller → Service → Repository, DTOs, EF Core) | endpoint/feature → `endpoints/` | `/taskflow:epct-dotnet` | `pr-reviewer-dotnet` |
 | 5 | **.NET — Frontend + Backend** | Full-stack: build both the API endpoints and the .NET UI pages | **both** → `pages/` + `endpoints/` | `/taskflow:epct-dotnet` | `pr-reviewer-dotnet` |
 
-**Build engine:** type 1 → `/taskflow:epct-rn` (React Native). Types 2–5 → `/taskflow:epct-dotnet` (.NET).
+**Build engine:** type 1 → `/taskflow:epct-rn` (React Native). **Type 2 (HTML only) → `/taskflow:epct-design-dotnet`** (theme-locked UI builder). Types 3–5 → `/taskflow:epct-dotnet` (.NET). All build engines run autonomously with email notifications.
 
 Work the phases in order. Ask only for inputs you don't already have.
 
@@ -265,7 +265,7 @@ Add the **`{{Pascal}}`** UI mirroring the solution's existing conventions — {{
 Maintain one combined [{{Pascal}}_scenarios.md]({{Pascal}}_scenarios.md); append each page's scenarios during its EPCT QA phase. Cover happy path, validation errors, empty/no-data, unauthorized, and navigation.
 
 ## Notifications (email)
-Drives `/taskflow:epct-dotnet`, which runs autonomously and emails the owner at task-start, plan-done, task-done, all-done, and on any blocker via `scripts/notify-email.ps1`. Run `/taskflow:init` once first.
+Drives the build engine — **HTML-only → `/taskflow:epct-design-dotnet`** (theme-locked); **Frontend (calls an API) → `/taskflow:epct-dotnet`** — which runs autonomously and emails the owner at task-start, plan-done, task-done, all-done, and on any blocker via `scripts/notify-email.ps1`. Run `/taskflow:init` once first.
 
 ## Status legend
 ✅ implemented · 🔲 stub/markup-only · ⬜ pending
@@ -327,13 +327,14 @@ If the project has no `scripts/notify-email.ps1`, run **`/taskflow:init`** first
 - Summary: folder path (`<kebab-name>-tasks/`), **project type** (1–5), what's inside (`screens/` / `pages/` / `endpoints/` — or both), and task count (Task 1 → N).
 - Then tell the user: *"The task pack is ready. When you want to start building, run the command below — the build runs autonomously and emails you at task-start, plan-done, task-done, and all-done (stopping only for a blocker)."*
 
-**Give the user the command that matches their project type** (build engine: type 1 → `/taskflow:epct-rn`; types 2–5 → `/taskflow:epct-dotnet`):
+**Give the user the command that matches their project type** (build engine: type 1 → `/taskflow:epct-rn`; type 2 → `/taskflow:epct-design-dotnet`; types 3–5 → `/taskflow:epct-dotnet`):
 
 - **Type 1 — React Native:** `/taskflow:epct-rn Build the complete {{Module}} module from <kebab-name>-tasks/README.md — one task at a time (Task 1 → N), following the README + each screens/*.md spec and the email notifications.`
-- **Types 2 & 3 — .NET UI (HTML-only / Frontend):** `/taskflow:epct-dotnet Build the complete {{Module}} UI from <kebab-name>-tasks/README.md — one task at a time (Task 1 → N), following the README + each pages/*.md spec and the email notifications.`
+- **Type 2 — .NET HTML only:** `/taskflow:epct-design-dotnet Build the complete {{Module}} UI from <kebab-name>-tasks/README.md — one page at a time (Task 1 → N), theme-locked to this project's house style, following the README + each pages/*.md spec and the email notifications.`
+- **Type 3 — .NET Frontend (calls an API):** `/taskflow:epct-dotnet Build the complete {{Module}} UI from <kebab-name>-tasks/README.md — one page at a time (Task 1 → N), following the README + each pages/*.md spec and the email notifications.`
 - **Type 4 — .NET Backend:** `/taskflow:epct-dotnet Build the complete {{Module}} API from <kebab-name>-tasks/README.md — one task at a time (Task 1 → N), following the README + each endpoints/*.md spec and the email notifications.`
 - **Type 5 — .NET Frontend + Backend:** `/taskflow:epct-dotnet Build the complete {{Module}} feature (API + UI) from <kebab-name>-tasks/README.md — one task at a time in the README's order (endpoints before the pages that use them), following each endpoints/*.md and pages/*.md spec and the email notifications.`
-- **Single task:** point the matching engine at one spec file, e.g. `/taskflow:epct-rn <kebab-name>-tasks/screens/NN_<screen>.md`, or `/taskflow:epct-dotnet <kebab-name>-tasks/pages/NN_<page>.md` / `.../endpoints/NN_<feature>.md`.
+- **Single task:** point the matching engine at one spec file, e.g. `/taskflow:epct-rn <kebab-name>-tasks/screens/NN_<screen>.md`; for a type-2 page `/taskflow:epct-design-dotnet <kebab-name>-tasks/pages/NN_<page>.md`; for a type-3 page or type-4/5 endpoint `/taskflow:epct-dotnet <kebab-name>-tasks/pages/NN_<page>.md` / `.../endpoints/NN_<feature>.md`.
 
 Whichever EPCT the user then runs works tasks one at a time and **emails the owner at task-start, plan-done, task-done, and all-done** (no approval gates at plan or QA), only STOPPING for a genuine blocker / needed intervention (with a summary email). Reviewers: React Native → `/taskflow:rn-reviewer` + `/taskflow:platformfix-rn`; all .NET types → `/taskflow:pr-reviewer-dotnet`.
 
