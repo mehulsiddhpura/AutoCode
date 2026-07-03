@@ -38,8 +38,9 @@ That's it. Now type `/taskflow:` and your commands will appear in the list.
 
 Building a feature is **three simple steps**. Type each command inside Claude Code.
 
-> **Note:** `Payroll` below is just an **example** — use your own name (`Invoices`, `Login`, …).
-> Whatever you name it, autocode makes a matching `<name>-tasks/` folder (`Invoices` → `invoices-tasks/`).
+> **Replace `<YourModule>` with your own feature name** (e.g. `Invoices`, `Login`, `Reports`).
+> Whatever you name it, autocode makes a matching `<your-module>-tasks/` folder — so `Invoices`
+> → `invoices-tasks/`, `Login` → `login-tasks/`.
 
 ### Step 0 — set up the project (once)
 
@@ -53,7 +54,7 @@ email notifications. Run it once per project. → see [email setup](#setting-up-
 ### Step 1 — describe your feature → get a task pack
 
 ```text
-/taskflow:autocode Payroll
+/taskflow:autocode <YourModule>
 ```
 
 **What happens:** it asks you, in plain words, *what you want to build* — the feature name, a
@@ -69,17 +70,18 @@ pack. It also asks what kind of project it is (pick one):
 | **.NET — Backend** | A Web API (no UI) |
 | **.NET — Frontend + Backend** | Full-stack: the API **and** the .NET UI |
 
-**What you'll get:** a new **`payroll-tasks/`** folder — one file per task (a screen, a page, or
-an endpoint), a build-order list, and a `README.md`. Then it **stops** and shows you the exact
+**What you'll get:** a new **`<your-module>-tasks/`** folder — one file per task (a screen, a page,
+or an endpoint), a build-order list, and a `README.md`. Then it **stops** and shows you the exact
 command to start building. *(It does not build automatically.)*
 
 ### Step 2 — build it
 
 ```text
-/taskflow:epct-rn Build the complete Payroll module from payroll-tasks/README.md — one task at a time.
+/taskflow:epct-rn Build the complete <YourModule> module from <your-module>-tasks/README.md — one task at a time.
 ```
-*(Use `/taskflow:epct-dotnet` for a .NET backend module. You don't have to type this by
-hand — Step 1 prints the exact command with your module name already filled in; just copy-paste it.)*
+*(This is the React Native command. For .NET use `/taskflow:epct-dotnet` (API / Frontend / full-stack)
+or `/taskflow:epct-design-dotnet` (HTML-only UI) instead. You don't have to type this by hand —
+**Step 1 prints the exact command with your module name already filled in**; just copy-paste it.)*
 
 **What you'll get:** the build runs on its own, one task at a time (Explore → Plan → Code →
 Review → QA), and **emails you** at each milestone — task started, plan ready, task done, and

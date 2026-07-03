@@ -101,18 +101,42 @@ Say why: *"This tells the build workflow WHEN to email you. It's the rulebook th
 ```markdown
 ## MANDATORY: Development Notifications (email)
 
-When running a multi-task pack with `/taskflow:epct-rn` or `/taskflow:epct-dotnet`, work the tasks one at a time and **run autonomously — do NOT stop for approval at plan or QA.** Just **email the task owner at the points below** to keep them informed. Send with:
+When running a multi-task pack with `/taskflow:epct-rn`, `/taskflow:epct-dotnet`, or `/taskflow:epct-design-dotnet`, work the tasks one at a time and **run autonomously — do NOT stop for approval at plan or QA.** **Email the task owner at the points below** with clear, readable detail. Send with:
 `powershell -ExecutionPolicy Bypass -NoProfile -File scripts/notify-email.ps1 -Subject "<subject>" -Body "<body>"`
 (The `-ExecutionPolicy Bypass -NoProfile` flags avoid the "running scripts is disabled on this system" error without changing any machine setting. Use `pwsh` instead of `powershell` if only PowerShell 7+ is installed.)
+**Multi-line body:** the body must have real line breaks — build it with a PowerShell here-string and pass that variable, e.g. `$b = @"` … multi-line … `"@; powershell -ExecutionPolicy Bypass -NoProfile -File scripts/notify-email.ps1 -Subject "…" -Body $b`. (Inside a double-quoted string you can also use `` `n `` for a newline.) Don't send the whole body as one run-on line.
 Email failures are non-fatal (log and continue). The ONLY time you STOP is a genuine blocker / needed intervention (row B).
 
-| # | When | Stop? | Subject | Body |
-|---|------|-------|---------|------|
-| 1 | Task is starting | no — proceed | `[<TASK>] Started` | task name + what it covers |
-| 2 | Plan is done | no — continue to Code | `[<TASK>] Plan done` | plan summary + acceptance criteria + risks |
-| 3 | Task completed (QA finished) | no — next task | `[<TASK>] Done` | what shipped + QA verdict + any deferred items |
-| 4 | All tasks completed (whole module) | done | `[<MODULE>] All tasks complete` | per-task summary + outstanding risks |
-| B | **Blocker / intervention needed** (any phase) | **YES — STOP** | `[<TASK>] NEEDS YOUR INTERVENTION` | proper summary: what stopped it, why, and exactly what input is needed |
+### Subject line — always this shape (so the inbox is scannable)
+`[<Module> · Task <n>/<N>] <Task name> — <Status>`
+- Statuses: **Started**, **Plan ready**, **Done**, **NEEDS YOUR INPUT**. For the final email use `[<Module>] All <N> tasks complete ✅`.
+- Example: `[Payroll · Task 2/6] Payslip List — Plan ready`
+
+### Body — readable, labelled plain text. Use this skeleton, fill real values, drop empty sections:
+```
+Module:  <Module> (<React Native | .NET …>)
+Task:    <n> of <N> — <Task name>
+Status:  <one line: what state + whether action is needed>
+
+── <Section title> ─────────────────────────────
+<short, specific content — real details, not placeholders>
+
+── What happens next ────────────────────────────
+<one line: "Building now, no action needed" / "Waiting for your reply", etc.>
+
+— taskflow (automated)
+```
+Keep it concise (a screenful), specific, and free of internal jargon. Use `•` bullets for lists.
+
+### What each email contains
+
+| # | When | Stop? | Subject status | Body sections to include |
+|---|------|-------|----------------|--------------------------|
+| 1 | Task is starting | no — proceed | `Started` | 1-line what this task covers · What happens next: "Building now, no action needed" |
+| 2 | Plan is done | no — continue to Code | `Plan ready` | **Plan summary** (2-4 lines) · **Acceptance criteria** (bullets) · **Risks/notes** (bullets) · Next: "Building automatically" |
+| 3 | Task completed (QA finished) | no — next task | `Done` | **What shipped** (files/screens/endpoints) · **QA result** (pass + any deferred items) · Next: task n+1 or "last task" |
+| 4 | All tasks completed | done | `All <N> tasks complete ✅` | **Per-task recap** (one bullet each: name — done/deferred) · **Outstanding risks** · Next: "Ready for your review" |
+| B | **Blocker / intervention needed** (any phase) | **YES — STOP** | `NEEDS YOUR INPUT` | **What happened** · **Why** · **What I need from you** (exact, specific) · Next: "Paused — reply to continue" |
 ```
 
 **After Part A, tell the user:** *"Plumbing done — those files are safe to commit. Now, do you want to turn on email notifications? It's optional."*

@@ -7,12 +7,12 @@ description: Structured 5-phase Explore-Plan-Code-Review-QA workflow for React N
 
 **Autonomous flow — notify, don't gate.** Work tasks one at a time (Task 1 → N) and run each task's phases straight through **without stopping for approval**. Email the task owner at the notification points below. The only time you STOP is a genuine **blocker** or a decision that truly requires human intervention.
 
-**Notifications (email the task owner via `scripts/notify-email.ps1`)**
-- **Task start** — when you begin a task. Then proceed.
-- **Plan done** — when Phase 2 (Plan) is complete. **Informational only — do NOT wait for approval; continue straight to Phase 3.**
-- **Task done** — when the task's QA (Phase 5) is complete.
-- **All tasks done** — when the whole module/pack is finished.
-- **Blocker / intervention needed** — any phase, when progress is blocked or a decision only the owner can make is required. **STOP and email a proper summary:** what stopped it, why, and exactly what input is needed.
+**Notifications (email the task owner via `scripts/notify-email.ps1`)** — format every email per the **Development Notifications** spec in `CLAUDE.md`: a scannable subject `[<Module> · Task n/N] <Task> — <Status>` and a readable, **labelled** body (Module / Task / Status header, then the relevant sections, then a "What happens next" line). Keep it concise, specific, and jargon-free.
+- **Task start** — when you begin a task. Subject status `Started`; body = 1-line what it covers + "Building now, no action needed". Then proceed.
+- **Plan done** — when Phase 2 (Plan) is complete. Subject status `Plan ready`; body = **Plan summary** + **Acceptance criteria** + **Risks/notes**. **Informational only — do NOT wait for approval; continue straight to Phase 3.**
+- **Task done** — when the task's QA (Phase 5) is complete. Subject status `Done`; body = **What shipped** (screens/files) + **QA result** + any deferred items.
+- **All tasks done** — when the whole module/pack is finished. Subject `[<Module>] All <N> tasks complete ✅`; body = **per-task recap** + **outstanding risks**.
+- **Blocker / intervention needed** — any phase, when progress is blocked or a decision only the owner can make is required. Subject status `NEEDS YOUR INPUT`; body = **What happened** + **Why** + **What I need from you** (exact). **STOP** and email this.
 
 Email failures are non-fatal (log and continue). A real blocker still STOPS the task until the owner responds.
 

@@ -28,11 +28,13 @@ referenced page. Keep the user informed by **email** at the notification points 
 
 Send with `powershell -ExecutionPolicy Bypass -NoProfile -File scripts/notify-email.ps1 -Subject "<subject>" -Body "<body>"` (use `pwsh` if only PowerShell 7+ is installed). Email failures are non-fatal (log and continue).
 
-- **Task start** — when you begin a page/task. Then proceed.
-- **Plan done** — after Theme Study + Plan. Send the Theme-Study + Plan summary. **Informational only — do NOT wait for approval; continue straight to Code.**
-- **Task done** — after the page's Self-QA passes.
-- **All tasks done** — when the whole module/pack of pages is finished.
-- **Blocker / intervention needed** — any phase, when progress is blocked or a decision only the owner can make is required. **STOP and email a proper summary:** what stopped it, why, and exactly what input is needed.
+**Format every email per the Development Notifications spec in `CLAUDE.md`:** a scannable subject `[<Module> · Page n/N] <Page> — <Status>` and a readable, **labelled** body (Module / Page / Status header, then the relevant sections, then a "What happens next" line). Keep it concise, specific, and jargon-free.
+
+- **Task start** — when you begin a page. Subject status `Started`; body = 1-line what it covers + "Building now, no action needed". Then proceed.
+- **Plan done** — after Theme Study + Plan. Subject status `Plan ready`; body = the **Theme-Study summary** + **Plan** (files/sections/states). **Informational only — do NOT wait for approval; continue straight to Code.**
+- **Task done** — after the page's Self-QA passes. Subject status `Done`; body = **What shipped** (page + CSS changed) + **QA result** + any deferred items.
+- **All tasks done** — when the whole pack of pages is finished. Subject `[<Module>] All <N> pages complete ✅`; body = **per-page recap** + **outstanding notes**.
+- **Blocker / intervention needed** — any phase, when progress is blocked or a decision only the owner can make is required. Subject status `NEEDS YOUR INPUT`; body = **What happened** + **Why** + **What I need from you** (exact). **STOP** and email this.
 
 The only time you STOP is a real blocker (or an explicitly hard-to-reverse/destructive action).
 
